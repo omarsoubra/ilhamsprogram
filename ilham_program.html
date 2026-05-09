@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ilham's 12-Week Recomp</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3d;
+    --accent: #4f7fff;
+    --accent2: #ff6b35;
+    --accent3: #00e5a0;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --danger: #ff4466;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a1f4a 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, #1a0f0a 0%, transparent 60%),
+                var(--bg);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 15vw, 11rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+
+  .hero-title span { color: var(--accent); }
+  .hero-title .line2 { color: var(--accent2); display: block; }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    margin-bottom: 3rem;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.6s forwards;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.8s forwards;
+  }
+
+  .stat-box {
+    background: var(--surface);
+    padding: 1.5rem 1rem;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+    display: block;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 1.2s forwards;
+  }
+
+  .scroll-hint span { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
+  .scroll-arrow { width: 24px; height: 24px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(45deg); animation: bounce 1.5s infinite; }
+
+  /* ─── NAV ─── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    padding: 1rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ─── SECTIONS ─── */
+  .section { display: none; padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .section.active { display: block; animation: fadeIn 0.3s ease; }
+
+  .section-header {
+    margin-bottom: 3rem;
+  }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .section-desc {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 650px;
+  }
+
+  /* ─── PHASE TABS ─── */
+  .phase-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .phase-tab {
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .phase-tab:hover { border-color: var(--accent); color: var(--text); }
+  .phase-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ─── DAY TABS ─── */
+  .day-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .day-tab {
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .day-tab:hover { border-color: var(--accent); color: var(--text); }
+  .day-tab.active { background: rgba(79,127,255,0.15); border-color: var(--accent); color: var(--accent); }
+
+  /* ─── PHASE INFO ─── */
+  .phase-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+  }
+
+  .info-card-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+  .info-card-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--accent3); }
+  .info-card-desc { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* ─── WORKOUT TABLE ─── */
+  .workout-day-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .day-badge {
+    background: var(--accent2);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .workout-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem; }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead tr { background: var(--surface2); }
+
+  th {
+    padding: 0.9rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.9rem 1rem;
+    font-size: 0.88rem;
+    border-bottom: 1px solid rgba(42,42,61,0.5);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tbody tr { background: var(--surface); transition: background 0.15s; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody tr:nth-child(even) { background: rgba(26,26,38,0.5); }
+  tbody tr:nth-child(even):hover { background: var(--surface2); }
+
+  .ex-name { font-weight: 500; color: var(--text); }
+  .ex-sets { font-family: 'DM Mono', monospace; color: var(--accent); font-weight: 500; }
+  .ex-reps { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; }
+  .ex-weight { font-family: 'DM Mono', monospace; color: var(--accent3); font-weight: 500; }
+  .ex-rest { color: var(--muted); font-size: 0.82rem; }
+  .ex-rpe { }
+
+  .rpe-pill {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+  }
+
+  .rpe-6 { background: rgba(0,229,160,0.15); color: var(--accent3); }
+  .rpe-7 { background: rgba(79,127,255,0.15); color: var(--accent); }
+  .rpe-8 { background: rgba(255,107,53,0.15); color: var(--accent2); }
+  .rpe-9 { background: rgba(255,68,102,0.15); color: var(--danger); }
+
+  /* ─── HOWTO MODAL ─── */
+  .howto-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: all 0.2s;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .howto-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 560px;
+    width: 100%;
+    position: relative;
+    animation: scaleIn 0.2s ease;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+    padding-right: 2rem;
+  }
+
+  .modal-body { color: var(--muted); line-height: 1.7; font-size: 0.9rem; }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { color: var(--text); border-color: var(--accent); }
+
+  /* ─── PROGRESSION TABLE ─── */
+  .prog-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); margin-top: 2rem; }
+
+  .prog-table th:first-child { text-align: left; }
+  .prog-table td:first-child { font-weight: 500; color: var(--text); }
+  .prog-table td:not(:first-child) { text-align: center; font-family: 'DM Mono', monospace; color: var(--accent3); font-size: 0.82rem; }
+  .prog-table th:not(:first-child) { text-align: center; }
+
+  /* ─── CARDIO ─── */
+  .cardio-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+
+  .cardio-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cardio-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .cardio-card.p1::before { background: var(--accent3); }
+  .cardio-card.p2::before { background: var(--accent); }
+  .cardio-card.p3::before { background: var(--accent2); }
+
+  .cardio-card-phase { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+  .cardio-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 1rem; }
+  .cardio-card-detail { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+  .cardio-card-detail strong { color: var(--text); }
+
+  /* ─── NUTRITION ─── */
+  .meal-cards { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .meal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    display: grid;
+    grid-template-columns: 160px 1fr 120px;
+    align-items: center;
+    gap: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .meal-card:hover { border-color: var(--accent); }
+  .meal-card:last-child { border-color: var(--accent); background: rgba(79,127,255,0.05); }
+
+  .meal-time { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em; }
+  .meal-food { font-size: 0.88rem; color: var(--text); }
+  .meal-cals { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--accent3); text-align: right; }
+
+  .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+
+  .rule-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .rule-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .rule-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .rule-text strong { color: var(--text); display: block; margin-bottom: 0.2rem; }
+
+  .supps-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+
+  .supp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+
+  .supp-name { font-weight: 600; color: var(--text); margin-bottom: 0.3rem; }
+  .supp-when { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent2); letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+  .supp-why { font-size: 0.82rem; color: var(--muted); }
+
+  /* ─── LIFESTYLE ─── */
+  .lifestyle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+  .life-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .life-card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .life-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .life-card-body { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+  .life-card-body li { margin-left: 1rem; margin-bottom: 0.3rem; }
+
+  /* ─── TRACKER ─── */
+  .tracker-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+
+  .tracker-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .tracker-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+
+  .tracker-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    padding: 0.5rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .tracker-input:focus { border-color: var(--accent); }
+
+  .tracker-unit { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+
+  .progress-wrap { margin-top: 2rem; }
+  .progress-label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+  .progress-label span { font-size: 0.8rem; color: var(--muted); }
+  .progress-label strong { font-family: 'DM Mono', monospace; color: var(--accent); font-size: 0.85rem; }
+  .progress-bar-bg { background: var(--surface); border-radius: 20px; height: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-bar { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent), var(--accent3)); transition: width 0.5s ease; }
+
+  .save-btn {
+    margin-top: 1.5rem;
+    padding: 0.8rem 2rem;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .save-btn:hover { background: #6b8fff; transform: translateY(-1px); }
+
+  .checkin-history { margin-top: 2rem; }
+  .checkin-history-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 1rem; }
+  .checkin-empty { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 2rem; border: 1px dashed var(--border); border-radius: 10px; }
+
+  .checkin-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  .checkin-date { font-family: 'DM Mono', monospace; color: var(--muted); font-size: 0.75rem; }
+  .checkin-weight { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--accent3); }
+  .checkin-del { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; padding: 0.2rem 0.5rem; cursor: pointer; font-size: 0.7rem; }
+  .checkin-del:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ─── ANIMS ─── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes bounce { 0%,100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(5px); } }
+  @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 700px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .phase-info { grid-template-columns: 1fr; }
+    .cardio-cards { grid-template-columns: 1fr; }
+    .rules-grid { grid-template-columns: 1fr; }
+    .supps-grid { grid-template-columns: 1fr; }
+    .lifestyle-grid { grid-template-columns: 1fr; }
+    .tracker-grid { grid-template-columns: 1fr; }
+    .meal-card { grid-template-columns: 1fr; }
+    .meal-cals { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <p class="hero-label">12-Week Transformation Program</p>
+    <h1 class="hero-title">ILHAM'S<span class="line2">RECOMP</span></h1>
+    <p class="hero-sub">Glute-priority recomp · Restore → Build → Refine · Goal: Strong, lean, sustainable</p>
+    <div class="stats-grid">
+      <div class="stat-box"><span class="stat-val"><span data-cfg="startWeight">108</span><span style="font-size:1.2rem">kg</span></span><span class="stat-label">Start Weight</span></div>
+      <div class="stat-box"><span class="stat-val">5'2"</span><span class="stat-label">Height</span></div>
+      <div class="stat-box"><span class="stat-val">1800</span><span class="stat-label">Daily Kcal</span></div>
+      <div class="stat-box"><span class="stat-val">12<span style="font-size:1.2rem">wk</span></span><span class="stat-label">Duration</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="showSection('training')">
+    <span>Start</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('training')">Training</button>
+  <button class="nav-btn" id="nav-cardio" onclick="tryNavLock('cardio')">Cardio</button>
+  <button class="nav-btn" id="nav-nutrition" onclick="tryNavLock('nutrition')">Nutrition</button>
+  <button class="nav-btn" onclick="showSection('lifestyle')">Lifestyle</button>
+  <button class="nav-btn" onclick="showSection('tracker')">Tracker</button>
+</nav>
+
+<!-- TRAINING -->
+<section class="section active" id="section-training">
+  <div class="section-header">
+    <div class="section-tag">Weeks 1–12</div>
+    <h2 class="section-title">TRAINING PLAN</h2>
+    <p class="section-desc">3 phases, 4 weeks each. Progressive overload built in. Tap any exercise to see how to do it correctly.</p>
+  </div>
+
+  <div class="phase-tabs">
+    <button class="phase-tab active" id="tab-phase-1" onclick="setPhase(1)">Phase 1 — Foundation</button>
+    <button class="phase-tab" id="tab-phase-2" onclick="tryUnlock(2)">Phase 2 — Build 🔒</button>
+    <button class="phase-tab" id="tab-phase-3" onclick="tryUnlock(3)">Phase 3 — Refine 🔒</button>
+  </div>
+
+  <!-- LOCK OVERLAY -->
+  <div id="lock-overlay" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;text-align:center;margin-bottom:2rem;">
+    <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:0.5rem;" id="lock-title">Phase 2 Locked</div>
+    <div style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem;line-height:1.6;" id="lock-desc"></div>
+    <div style="display:flex;gap:0.75rem;justify-content:center;align-items:center;flex-wrap:wrap;">
+      <input id="unlock-input" type="text" placeholder="Enter unlock code" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.9rem;padding:0.7rem 1rem;outline:none;width:200px;text-align:center;letter-spacing:0.1em;" onkeydown="if(event.key==='Enter')submitCode()"/>
+      <button onclick="submitCode()" style="padding:0.7rem 1.5rem;background:var(--accent);border:none;border-radius:8px;color:white;font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Unlock</button>
+    </div>
+    <div id="unlock-error" style="color:var(--danger);font-size:0.8rem;margin-top:0.75rem;display:none;">Incorrect code. Contact your trainer.</div>
+    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.15em;margin-bottom:0.5rem;">TIME REMAINING</div>
+      <div id="lock-countdown" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--accent2);"></div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem;">until this phase becomes available</div>
+    </div>
+  </div>
+
+  <div class="phase-info" id="phase-info"></div>
+
+  <div class="day-tabs" id="day-tabs"></div>
+
+  <div id="workout-content"></div>
+
+  <div id="progression-content"></div>
+</section>
+
+<!-- CARDIO -->
+<section class="section" id="section-cardio">
+  <div class="section-header">
+    <div class="section-tag">Recovery + Optional</div>
+    <h2 class="section-title">CARDIO PROTOCOL</h2>
+    <p class="section-desc">Cardio supports recovery and conditioning without competing with hypertrophy. Two short sessions a week is enough to build a base.</p>
+  </div>
+
+  <div class="cardio-cards">
+    <div class="cardio-card p1">
+      <div class="cardio-card-phase">Weeks 1–4 · Foundation</div>
+      <div class="cardio-card-title">Optional Walk</div>
+      <div class="cardio-card-detail">
+        <strong>20–30 minutes</strong> on rest days, if you feel like it<br>
+        Easy pace — phone off, no music required, just movement<br><br>
+        Skip if you're wrecked from concrete work. Your job is the cardio. This is for general health and headspace.
+      </div>
+    </div>
+    <div class="cardio-card p2" id="cardio-card-p2" style="filter:blur(4px);pointer-events:none;user-select:none;">
+      <div class="cardio-card-phase">Weeks 5–8 · Build</div>
+      <div class="cardio-card-title">Same — Recovery Walk</div>
+      <div class="cardio-card-detail">
+        <strong>20–30 minutes</strong> on rest days, optional<br>
+        Easy pace, ideally outdoors<br><br>
+        Phase 2 surplus is the biggest of the program — recovery is the bottleneck. Don't add cardio that competes with growth. Your concrete work covers the bases.
+      </div>
+    </div>
+    <div class="cardio-card p3" id="cardio-card-p3" style="filter:blur(4px);pointer-events:none;user-select:none;">
+      <div class="cardio-card-phase">Weeks 9–12 · Refine</div>
+      <div class="cardio-card-title">Optional Walk + Mobility</div>
+      <div class="cardio-card-detail">
+        <strong>20–30 minutes</strong> walk, plus 10 min hip/ankle mobility<br>
+        Surplus is dialed back, training intensity is at peak<br><br>
+        If you want to add anything, make it mobility work for legs (your concreting is brutal on hips and ankles). Save energy for the heavy lifts.
+      </div>
+    </div>
+  </div>
+
+  <div id="cardio-unlock-notice" style="background:var(--surface);border:1px solid var(--accent2);border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;text-align:center;">
+    <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--accent2);letter-spacing:0.1em;">🔒 Phase 2 &amp; 3 cardio protocols unlock when you complete Phase 1 and enter your trainer code.</span>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--accent2);border-radius:12px;padding:1.5rem;margin-top:1rem;">
+    <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--accent2);letter-spacing:0.2em;margin-bottom:0.5rem;">⚠ ACTIVE JOB NOTE</div>
+    <div style="font-size:0.88rem;color:var(--muted);line-height:1.7;">Your your daily routine routine is moderate-active. If energy crashes before training, schedule a 5-minute warmup walk to switch gears mentally.</div>
+  </div>
+
+  <div style="margin-top:2rem;">
+    <div class="section-tag" style="margin-bottom:0.75rem;">Cardio Days</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);">
+        <div style="padding:1.2rem 1.5rem;border-right:1px solid var(--border);">
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:0.3rem;">REST DAYS</div>
+          <div style="font-size:0.9rem;">Optional walk if energy is good</div>
+        </div>
+        <div style="padding:1.2rem 1.5rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:0.3rem;">JOB AS CARDIO</div>
+          <div style="font-size:0.9rem;">Your concrete shifts already cover this</div>
+        </div>
+      </div>
+      <div style="padding:1rem 1.5rem;font-size:0.82rem;color:var(--muted);">A short walk in the evening, when you can, helps mentally separate work from training. Not required — your physical job already covers daily movement.</div>
+    </div>
+  </div>
+</section>
+
+<!-- NUTRITION -->
+<section class="section" id="section-nutrition">
+  <div class="section-header">
+    <div class="section-tag">Daily Fuel</div>
+    <h2 class="section-title">NUTRITION</h2>
+    <p class="section-desc">Science-based phased nutrition. Calories drop each block as your body adapts. Every meal, every day, every week — all 12 weeks mapped out.</p>
+  </div>
+
+  <div style="background:rgba(79,127,255,0.07);border:1px solid rgba(79,127,255,0.3);border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:2rem;">
+    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent);letter-spacing:0.2em;margin-bottom:0.5rem;">THE SCIENCE</div>
+    <div style="font-size:0.85rem;color:var(--muted);line-height:1.7;">TDEE ~2,042 kcal (moderate job + training). Protein set at <strong style="color:var(--text)">2.3g/kg (~131g/day)</strong> per Morton et al. (2018) for hypertrophy. Deficit increases progressively as the program progresses to maintain consistent rate of fat loss. Carbs concentrated around training; pre-bed casein/cottage cheese supports overnight muscle protein synthesis.</div>
+  </div>
+
+  <div class="phase-tabs" id="nutrition-phase-tabs">
+    <button class="phase-tab active" onclick="setNutritionPhase(1)">Phase 1 · Weeks 1–4</button>
+    <button class="phase-tab" onclick="setNutritionPhase(2)">Phase 2 · Weeks 5–8 🔒</button>
+    <button class="phase-tab" onclick="setNutritionPhase(3)">Phase 3 · Weeks 9–12 🔒</button>
+  </div>
+
+  <div id="nutrition-main" style="margin-top:1.5rem;"></div>
+
+  <div class="rules-grid" style="margin-top:2rem;">
+    <div class="rule-card"><div class="rule-icon">🍗</div><div class="rule-text"><strong>Protein Every Single Meal</strong>Spread across 4–5 meals. Research shows this maximises muscle protein synthesis vs eating it all at once.</div></div>
+    <div class="rule-card"><div class="rule-icon">🥘</div><div class="rule-text"><strong>Meal Prep Sundays</strong>Cook bulk chicken, rice, and chop veggies every Sunday so you never default to takeout.</div></div>
+    <div class="rule-card"><div class="rule-icon">🌶️</div><div class="rule-text"><strong>Season Your Food</strong>Sriracha, soy sauce, your fave spices — zero calories, massive flavour. Clean eating doesn't have to be boring.</div></div>
+    <div class="rule-card"><div class="rule-icon">🚫</div><div class="rule-text"><strong>Limit Alcohol</strong>Suppresses muscle protein synthesis for up to 24 hours. Minimise for 12 weeks.</div></div>
+    <div class="rule-card"><div class="rule-icon">🥡</div><div class="rule-text"><strong>If You Eat Out</strong>Grilled protein + salad or rice. Avoid fried and creamy. Once a week won't derail you.</div></div>
+    <div class="rule-card"><div class="rule-icon">⏱️</div><div class="rule-text"><strong>Pre + Post Workout Meals</strong>Eat within 2–3 hours before and after training. Muscles are most primed to absorb nutrients at this window.</div></div>
+  </div>
+
+  <div class="section-tag" style="margin-top:2rem;margin-bottom:1rem;">Supplements</div>
+  <div class="supps-grid">
+    <div class="supp-card"><div class="supp-name">Whey Protein</div><div class="supp-when">Post-workout + between meals</div><div class="supp-why">Essential for hitting 131–146g daily protein across 5 meals. Get a 2kg bag — cheapest per serve.</div></div>
+    <div class="supp-card"><div class="supp-name">Creatine Monohydrate · 5g</div><div class="supp-when">Daily — any time with water</div><div class="supp-why">Clinically proven to increase strength, training volume, and lean mass accrual during a deficit (Kreider et al., 2017). Every day, no loading needed.</div></div>
+    <div class="supp-card"><div class="supp-name">Vitamin D3</div><div class="supp-when">Morning with food</div><div class="supp-why">Most adults dip below optimal in winter. Vit D matters for testosterone, mood, and recovery. A daily 1000–2000 IU is cheap insurance.</div></div>
+    <div class="supp-card"><div class="supp-name">Magnesium Glycinate</div><div class="supp-when">Before bed</div><div class="supp-why">Improves sleep quality and recovery. Helps hit that 7–8hrs target.</div></div>
+  </div>
+</section>
+
+<!-- LIFESTYLE -->
+<section class="section" id="section-lifestyle">
+  <div class="section-header">
+    <div class="section-tag">The Other Stuff</div>
+    <h2 class="section-title">LIFESTYLE</h2>
+    <p class="section-desc">Training and food are 70% of the equation. The rest comes down to sleep, stress, and staying consistent when motivation dips.</p>
+  </div>
+
+  <div class="lifestyle-grid">
+    <div class="life-card">
+      <div class="life-card-icon">😴</div>
+      <div class="life-card-title">SLEEP</div>
+      <div class="life-card-body">
+        Target <strong style="color:var(--accent)">7–9 hours</strong> every night. You're already in the right zone (~7h) — protect it like another training session. Phone out of room, hard cutoff 30 min before bed, consistent bed/wake times.<br><br>
+        <ul>
+          <li>Set a consistent bedtime — same time every night</li>
+          <li>No screens 30 mins before bed if possible</li>
+          <li>Magnesium Glycinate before bed will genuinely help</li>
+          <li>Keep your room cool and dark</li>
+        </ul>
+      </div>
+    </div>
+    <div class="life-card">
+      <div class="life-card-icon">🧠</div>
+      <div class="life-card-title">STRESS</div>
+      <div class="life-card-body">
+        Moderate stress is normal — what matters is recovery between hits. A few habits can keep cortisol in check across the week.<br><br>
+        <ul>
+          <li>Training itself is one of the best stress relief tools — use it</li>
+          <li>A 10-minute walk after work helps the nervous system shift gears</li>
+          <li>10 mins of deep breathing or a walk after work makes a difference</li>
+          <li>Don't skip rest days — they matter</li>
+        </ul>
+      </div>
+    </div>
+    <div class="life-card">
+      <div class="life-card-icon">📸</div>
+      <div class="life-card-title">TRACK PROGRESS</div>
+      <div class="life-card-body">
+        The scale doesn't tell the whole story. Track these too:<br><br>
+        <ul>
+          <li>How your clothes fit (especially waist)</li>
+          <li>Strength improvements week to week</li>
+          <li>Energy levels throughout the day</li>
+          <li>Weekly photos — same lighting, same pose, front and side</li>
+          <li>Sleep quality out of 10</li>
+        </ul>
+      </div>
+    </div>
+    <div class="life-card">
+      <div class="life-card-icon">📅</div>
+      <div class="life-card-title">WEEKLY CHECK-IN</div>
+      <div class="life-card-body">
+        Every Sunday after meal prep:<br><br>
+        <ul>
+          <li>Weigh yourself — morning, after toilet, before food</li>
+          <li>Take front and side photo in the same spot</li>
+          <li>Rate energy, sleep, and stress out of 10</li>
+          <li>Log it in the Tracker tab</li>
+          <li>Send to your trainer so program can be adjusted</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem;background:linear-gradient(135deg,rgba(79,127,255,0.1),rgba(0,229,160,0.05));border:1px solid var(--accent);border-radius:16px;padding:2rem;text-align:center;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:0.5rem;">Trust the process. Put in the work.</div>
+    <div style="color:var(--muted);font-size:0.9rem;">See you with the muscle you've been chasing — and a metabolism that won't quit.</div><div style="margin-top:1.2rem;font-size:0.6rem;opacity:0.35;font-family:DM Mono,monospace;"><a href="javascript:trainerLogin()" style="color:var(--muted);text-decoration:none;">· trainer access ·</a></div>
+  </div>
+</section>
+
+<!-- TRACKER -->
+<section class="section" id="section-tracker">
+  <div class="section-header">
+    <div class="section-tag">Weekly Check-In</div>
+    <h2 class="section-title">TRACKER</h2>
+    <p class="section-desc">Log every Sunday. Data sends to your trainer automatically via email and Google Sheets.</p>
+  </div>
+
+  <!-- Main input grid -->
+  <div class="tracker-grid">
+    <div class="tracker-card">
+      <div class="tracker-label">Current Weight (kg)</div>
+      <input class="tracker-input" type="number" id="input-weight" placeholder="108" min="50" max="200" step="0.1"/>
+      <div class="tracker-unit">kilograms</div>
+    </div>
+    <div class="tracker-card">
+      <div class="tracker-label">Week Number</div>
+      <input class="tracker-input" type="number" id="input-week" placeholder="1" min="1" max="12"/>
+      <div class="tracker-unit">of 12</div>
+    </div>
+    <div class="tracker-card">
+      <div class="tracker-label">Energy (1–10)</div>
+      <input class="tracker-input" type="number" id="input-energy" placeholder="7" min="1" max="10"/>
+      <div class="tracker-unit">energy levels</div>
+    </div>
+  </div>
+
+  <div class="tracker-grid" style="margin-top:1rem;">
+    <div class="tracker-card">
+      <div class="tracker-label">Sleep (1–10)</div>
+      <input class="tracker-input" type="number" id="input-sleep" placeholder="7" min="1" max="10"/>
+      <div class="tracker-unit">sleep quality</div>
+    </div>
+    <div class="tracker-card">
+      <div class="tracker-label">Stress (1–10)</div>
+      <input class="tracker-input" type="number" id="input-stress" placeholder="5" min="1" max="10"/>
+      <div class="tracker-unit">stress level</div>
+    </div>
+    <div class="tracker-card">
+      <div class="tracker-label">Overall Vibe (1–10)</div>
+      <input class="tracker-input" type="number" id="input-feeling" placeholder="7" min="1" max="10"/>
+      <div class="tracker-unit">overall feeling</div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div style="margin-top:1rem;">
+    <textarea id="input-notes" placeholder="Any notes for your trainer this week? Injuries, lifestyle changes, how training felt..." style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.88rem;padding:1rem;resize:vertical;min-height:80px;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-wrap" style="margin-top:1.5rem;">
+    <div class="progress-label"><span>Goal Progress</span><strong id="progress-text">0%</strong></div>
+    <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;margin-top:0.4rem;">
+      <span data-cfg="startWeightLabel" style="font-size:0.72rem;color:var(--muted)">57 kg (start)</span>
+      <span data-cfg="goalWeightLabel" style="font-size:0.72rem;color:var(--muted)">56 kg (goal)</span>
+    </div>
+  </div>
+
+  <!-- Weight lost counter -->
+  <div id="weight-lost-display" style="display:none;margin-top:1rem;background:rgba(0,229,160,0.05);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:1rem 1.5rem;display:flex;gap:2rem;flex-wrap:wrap;">
+    <div><div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.2rem;">Total Lost</div><div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent3);" id="total-lost-display">0 kg</div></div>
+    <div><div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.2rem;">To Goal</div><div data-cfg="toGoalKg" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent2);" id="to-goal-display">1 kg</div></div>
+    <div><div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.2rem;">Avg Per Week</div><div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);" id="avg-loss-display">—</div></div>
+  </div>
+
+  <!-- Send status -->
+  <div id="send-status" style="display:none;margin-top:1rem;padding:0.8rem 1.2rem;border-radius:8px;font-size:0.85rem;font-family:'DM Mono',monospace;letter-spacing:0.05em;"></div>
+
+  <button class="save-btn" onclick="saveCheckin()" id="log-btn">📊 Log Check-In + Send to Trainer</button>
+
+  <!-- Chart -->
+  <div style="margin-top:2rem;" id="chart-section" style="display:none;">
+    <div class="checkin-history-title">Weight Progress Chart</div>
+    <canvas id="weight-chart" style="width:100%;max-height:220px;margin-top:1rem;"></canvas>
+  </div>
+
+  <!-- History -->
+  <div class="checkin-history">
+    <div class="checkin-history-title">Check-In History</div>
+    <div id="checkin-list"></div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const howTos = {
+  "Lat Pulldown (Wide Grip)": "Sit at the machine and grip the bar just wider than shoulder width. Pull the bar down to your upper chest, squeezing your lats hard at the bottom. Control the weight back up slowly — don't just let it fly. Never swing your body or use momentum.",
+  "Seated Cable Row": "Sit upright with your feet on the pad and grip the handle. Pull the handle into your lower chest/upper abs with your elbows close to your body. Squeeze your back hard at peak contraction. Slowly return to the start — feel the stretch.",
+  "Dumbbell Shoulder Press": "Sit on an upright bench, dumbbells at shoulder height with palms facing forward. Press up until arms are nearly straight — don't fully lock out. Lower slowly back to shoulder height. Keep your core tight and don't arch your lower back.",
+  "Dumbbell Lateral Raise": "Stand with dumbbells at your sides. Raise both arms out to the sides until they're parallel with the floor, with a slight bend in the elbows. Lower slowly. Do NOT swing — control is everything here. Slight forward lean helps target the right part of the delt.",
+  "Face Pulls (Cable)": "Set the cable at head height with a rope attachment. Pull the rope toward your face, separating your hands as you pull — like you're trying to pull it apart. Keep elbows high throughout. Hold for 1 second at peak contraction. Great for rear delts and shoulder health.",
+  "Plank Hold": "Forearms on the floor, body in a straight line from head to heels. Brace your core as hard as you can and squeeze your glutes. No sagging hips, no raised bum. Breathe steadily. If form breaks, stop — quality over time.",
+  "Leg Press": "Feet shoulder-width apart on the platform. Lower the weight until knees are at 90 degrees — don't let your lower back peel off the seat. Press through your heels to the start position. Do NOT lock your knees out at the top.",
+  "Romanian Deadlift (DB)": "Stand with dumbbells in front of your thighs. Hinge at the hips — push them back — while lowering the weights down your legs. Feel the stretch in your hamstrings. Drive your hips forward to stand back up. Keep your back flat the whole time.",
+  "Leg Extension": "Sit on the machine with the pad resting across your shins just above your ankles. Extend your legs fully and squeeze your quads hard at the top. Lower slowly — don't let the weight crash down.",
+  "Leg Curl (Seated)": "Sit in the machine with the pads across your ankles. Curl your legs down toward your seat, squeezing your hamstrings hard. Return slowly and feel the stretch at the top. Don't bounce.",
+  "Calf Raise (Machine)": "Shoulders under the pads with the balls of your feet on the platform. Rise up as high as possible — hold for a second at the top — then lower your heels below the platform for a full stretch. That bottom stretch is where the growth happens.",
+  "Ab Crunch (Machine)": "Sit in the machine and grip the handles at head level. Crunch forward, bringing your elbows toward your knees. Hold for 1 second at the bottom. Return slowly — feel the stretch at the top.",
+  "Incline DB Chest Press": "Set the bench to 30–45 degree incline. Press the dumbbells up above your upper chest with a slight inward arc. Lower slowly with control — elbows at about 45 degrees from your body. Feel the stretch at the bottom before pressing again.",
+  "Flat DB Chest Press": "Lie flat on the bench with dumbbells at chest height. Press up and slightly inward. Lower slowly and feel the chest stretch at the bottom. Elbows shouldn't flare out to 90 degrees — keep them slightly tucked.",
+  "Cable Chest Fly (Low)": "Set the cables low to the ground. Stand in the middle and grab the handles. Lean slightly forward and arc your arms up and together as if hugging a barrel. Squeeze your chest hard at the top. Keep a slight bend in your elbows throughout.",
+  "Tricep Pushdown (Rope)": "Set the cable at the top with a rope attachment. Keep elbows locked tight at your sides — they don't move. Push the rope down and split the ends apart at the bottom. Squeeze your triceps. Slowly return.",
+  "DB Hammer Curl": "Stand with dumbbells at your sides, palms facing each other (neutral grip). Curl up keeping palms neutral the whole time — don't rotate. Lower slowly. Keep elbows at your sides.",
+  "Hanging Knee Raises": "Hang from a pull-up bar. Brace your core and raise your knees to your chest. Lower slowly — don't swing. If swinging happens, let yourself settle before the next rep.",
+  "Pull-Up Assisted (Machine)": "Select the assistance weight (higher number = easier). Kneel on the pad and grip the handles wider than shoulder width. Pull yourself up until your chin clears the bar. Lower slowly and fully extend at the bottom before each rep.",
+  "Single Arm DB Row": "Place one knee and one hand on the bench for support. With your free hand holding the dumbbell, row it up to your hip with your elbow close to your body. Squeeze your back hard at the top. Lower slowly and let your shoulder drop slightly for a full stretch.",
+  "Rear Delt Fly (DB)": "Hinge forward until your torso is near parallel to the floor. With a slight bend in your elbows, raise the dumbbells out to the sides. Think about squeezing your rear delts — not just lifting your arms. Lower slowly.",
+  "Upright Row (Cable)": "Stand facing the cable and grip the bar with hands just inside shoulder width. Pull the bar up to chin height, leading with your elbows. Elbows should be higher than your wrists at the top. Lower slowly.",
+  "EZ Bar Curl": "Stand holding the EZ bar at the angled grip. Keep elbows pinned to your sides. Curl the bar up to shoulder height and squeeze your biceps hard at the top. Lower slowly — don't just drop it.",
+  "Dead Bug": "Lie on your back with arms pointing straight to the ceiling and knees at 90 degrees. Slowly lower one arm overhead AND the opposite leg toward the floor at the same time. Bring them back and switch sides. Keep your lower back pressed into the floor at all times — that's the whole point.",
+  "Cable Crunch": "Kneel below the cable with a rope attachment at head height. Grip the rope at your temples. Crunch down toward the floor, rounding your spine. Hold for 1 second. Return slowly. The resistance should come from your abs — not your hip flexors.",
+  "Weighted Plank": "Standard plank position with a weight plate placed on your upper back (have someone put it there or carefully lower yourself onto it). Same rules as the regular plank — rigid body, braced core, squeezed glutes.",
+  "Hanging Leg Raise": "Hang from a pull-up bar with a strong grip. Brace your core hard and raise your legs until they're parallel to the floor (or higher if you can). Lower slowly — no swinging. More advanced than knee raises.",
+  "Cable Bicep Curl": "Stand facing the cable machine with it set at the lowest position. Grip the straight bar or rope with an underhand grip, elbows tucked at your sides. Curl the weight up to shoulder height, squeezing your biceps hard at the top. Lower slowly — the eccentric is where a lot of the growth happens. Keep elbows stationary throughout.",
+  "Overhead Tricep Extension (DB)": "Hold one dumbbell with both hands, arms extended overhead. Keep your elbows pointing forward and close to your head — they should not flare out. Lower the weight behind your head by bending at the elbows. Extend back to the start and squeeze your triceps at the top. Control the weight down slowly.",
+  "Landmine Twist": "Insert one end of a barbell into a corner or landmine attachment. Grip the other end with both hands, arms extended. Rotate the bar from one side to the other in a controlled arc. Keep hips still — the rotation comes from your core, not your legs.",
+    "Hack Squat": "Set up on the hack squat machine with feet shoulder-width and slightly forward of your hips on the platform. Brace your core, unrack, and descend with control until thighs are at or just below parallel. Drive through your mid-foot to stand. Keep your back flat against the pad — don't let your hips peel off. The forward foot position emphasizes quads.",
+  "Walking Lunges (DB)": "Hold a dumbbell in each hand at your sides. Step forward into a lunge, lowering your back knee toward the floor. Front shin stays roughly vertical. Drive through the heel of your front foot to stand and step the back leg through into the next lunge. Keep your torso upright. Alternate legs each rep.",
+  "Bulgarian Split Squat": "Stand a few feet in front of a bench facing away. Place the top of your back foot on the bench. Hold dumbbells at your sides. Lower the back knee straight down toward the floor by bending the front leg. Front shin angles forward; front knee tracks over your toes. Drive through your front heel to stand. All reps on one leg, then switch.",
+  "Hip Thrust": "Sit on the floor with your upper back resting against a bench. Roll a barbell (or place a dumbbell) over your hips — use a pad. Plant feet flat, knees bent ~90°. Drive through your heels to lift your hips until your torso is parallel to the floor and glutes are squeezed hard at the top. Lower with control. Don't hyperextend the lower back.",
+  "Chest-Supported Row": "Set the bench to ~30° incline and lie face-down with chest pressed into the pad. Hold dumbbells with arms hanging straight down. Row the dumbbells up by driving your elbows back — squeeze the shoulder blades together at the top. Lower under control. Chest stays on the pad the whole time; the support eliminates lower-back fatigue and isolates the upper back.",
+  "Cable Lateral Raise": "Stand sideways to a low cable, handle in the hand furthest from the stack so the cable runs across your body. Raise your arm out to the side until it's parallel to the floor — lead with your elbow, slight bend in the arm. Lower slowly. Cable tension stays on the side delt through the full range, unlike dumbbells which lose tension at the bottom.",
+  "Lying Leg Curl": "Lie face-down on the leg curl machine with the pad just above your heels. Grip the handles. Curl the weight up by flexing your hamstrings, bringing your heels toward your glutes. Squeeze at the top. Lower under control — don't let the stack slam down. Keep your hips pressed into the pad throughout.",
+  "Standing Calf Raise": "Stand with the balls of your feet on the platform, heels hanging off. Pad on shoulders or hold dumbbells. Drop your heels below the platform for a deep stretch, then drive up onto your toes as high as possible. Squeeze the calves at the top, lower slowly. Full range — no half reps.",
+  "Smith Squat": "Set the bar at upper-back height. Position feet slightly forward of the bar so the descent is vertical and quad-dominant. Brace, unrack, descend until thighs are at or below parallel. Drive up through mid-foot. The fixed bar path makes this safer for solo training and lets you push closer to failure.",
+  "EZ Bar Curl": "Grip the EZ bar with hands on the angled portion (semi-supinated). Elbows pinned at your sides. Curl the bar up by flexing your biceps — don't swing your hips. Squeeze at the top, lower slowly to a full stretch. The EZ bar's angle is gentler on the wrists than a straight bar."
+};
+
+// ╔═════════════════════════════════════════════════════════════════════════╗
+// ║  EDIT ZONE — TRAINING PLANS                                             ║
+// ║  Each phase (1, 2, 3) has 5 days. Each day has a `label`, `badge`,      ║
+// ║  and an `exercises` array. Edit `name`, `sets`, `reps`, `weight`,       ║
+// ║  `rest`, `rpe` per row. Exercise names should match keys in the         ║
+// ║  `exerciseGuide` object above so the "How to" link works.               ║
+// ╚═════════════════════════════════════════════════════════════════════════╝
+const phases = {
+  1: {
+    label: "Restore", weeks: "1–4",
+    desc: "Reverse the metabolic plateau and build the foundation. Calories rise, training intensity is moderate (RPE 6–7), 3 sets dominant. The point of this phase is to restore performance and prepare your body to actually grow muscle in Phase 2.",
+    info: [
+      { label: "Weeks", val: "1–4", desc: "Restore phase" },
+      { label: "Intensity", val: "RPE 6–7", desc: "Moderate — 3 reps in reserve" },
+      { label: "Focus", val: "Reset", desc: "Restore TDEE + groove patterns" },
+    ],
+    days: [
+      {
+        label: "Day 1 — Glute & Quad (Heavy)",
+        badge: "GLUTE PRIORITY",
+        exercises: [
+          { name: "Hip Thrust", sets: "3", reps: "10", weight: "45kg", rest: "90s", rpe: "7" },
+          { name: "Goblet Squat", sets: "3", reps: "10–12", weight: "16kg", rest: "90s", rpe: "7" },
+          { name: "Walking Lunges (DB)", sets: "3", reps: "10 each", weight: "8kg ea", rest: "90s", rpe: "7" },
+          { name: "Leg Extension", sets: "3", reps: "12–15", weight: "25kg", rest: "60s", rpe: "7" },
+          { name: "Standing Calf Raise", sets: "3", reps: "12–15", weight: "30kg", rest: "60s", rpe: "7" },
+          { name: "Cable Crunch", sets: "3", reps: "15", weight: "15kg", rest: "60s", rpe: "6" },
+        ]
+      },
+      {
+        label: "Day 2 — Upper Push",
+        badge: "PUSH",
+        exercises: [
+          { name: "Incline DB Chest Press", sets: "3", reps: "10–12", weight: "10kg ea", rest: "90s", rpe: "7" },
+          { name: "Dumbbell Shoulder Press", sets: "3", reps: "10–12", weight: "8kg ea", rest: "90s", rpe: "7" },
+          { name: "Cable Lateral Raise", sets: "3", reps: "12–15", weight: "4kg", rest: "60s", rpe: "7" },
+          { name: "Tricep Pushdown (Rope)", sets: "3", reps: "12–15", weight: "14kg", rest: "60s", rpe: "7" },
+          { name: "Overhead Tricep Extension (DB)", sets: "3", reps: "10–12", weight: "8kg", rest: "60s", rpe: "7" },
+          { name: "Plank Hold", sets: "3", reps: "30 sec", weight: "BW", rest: "60s", rpe: "6" },
+        ]
+      },
+      {
+        label: "Day 3 — Glute Volume + Hamstring",
+        badge: "POSTERIOR CHAIN",
+        exercises: [
+          { name: "Romanian Deadlift (DB)", sets: "3", reps: "10–12", weight: "16kg ea", rest: "90s", rpe: "7" },
+          { name: "Hip Thrust (Volume)", sets: "3", reps: "12–15", weight: "40kg", rest: "90s", rpe: "7" },
+          { name: "Bulgarian Split Squat", sets: "3", reps: "10 each", weight: "8kg ea", rest: "90s", rpe: "7" },
+          { name: "Lying Leg Curl", sets: "3", reps: "12", weight: "22kg", rest: "60s", rpe: "7" },
+          { name: "Cable Glute Kickback", sets: "3", reps: "12 each", weight: "10kg", rest: "60s", rpe: "7" },
+          { name: "Hanging Knee Raises", sets: "3", reps: "10", weight: "BW", rest: "60s", rpe: "6" },
+        ]
+      },
+      {
+        label: "Day 4 — Upper Pull",
+        badge: "PULL",
+        exercises: [
+          { name: "Lat Pulldown (Wide Grip)", sets: "3", reps: "10–12", weight: "30kg", rest: "90s", rpe: "7" },
+          { name: "Seated Cable Row", sets: "3", reps: "10–12", weight: "28kg", rest: "90s", rpe: "7" },
+          { name: "Single Arm DB Row", sets: "3", reps: "10 each", weight: "12kg ea", rest: "90s", rpe: "7" },
+          { name: "Face Pulls (Cable)", sets: "3", reps: "15", weight: "12kg", rest: "60s", rpe: "6" },
+          { name: "Cable Bicep Curl", sets: "3", reps: "12", weight: "12kg", rest: "60s", rpe: "7" },
+          { name: "DB Hammer Curl", sets: "3", reps: "10–12", weight: "6kg ea", rest: "60s", rpe: "7" },
+        ]
+      },
+      {
+        label: "Day 5 — Light Upper + Glute Pump",
+        badge: "ENDO-FRIENDLY",
+        exercises: [
+          { name: "Flat DB Chest Press", sets: "3", reps: "12", weight: "8kg ea", rest: "60s", rpe: "6" },
+          { name: "Chest-Supported Row", sets: "3", reps: "12", weight: "8kg ea", rest: "60s", rpe: "7" },
+          { name: "Dumbbell Lateral Raise", sets: "3", reps: "12–15", weight: "4kg ea", rest: "60s", rpe: "7" },
+          { name: "Cable Bicep Curl", sets: "3", reps: "12", weight: "12kg", rest: "60s", rpe: "7" },
+          { name: "Cable Tricep Pushdown", sets: "3", reps: "12", weight: "14kg", rest: "60s", rpe: "7" },
+          { name: "Cable Glute Kickback", sets: "3", reps: "15 each", weight: "8kg", rest: "60s", rpe: "7" },
+          { name: "Plank Hold", sets: "3", reps: "30 sec", weight: "BW", rest: "60s", rpe: "6" },
+        ]
+      },
+    ],
+    progression: [
+      ["Exercise", "Week 1", "Week 2", "Week 3", "Week 4"],
+      ["Hip Thrust", "45kg", "50kg", "55kg", "60kg"],
+      ["Hip Thrust (Vol)", "40kg", "42.5kg", "45kg", "47.5kg"],
+      ["Goblet Squat", "16kg", "18kg", "20kg", "22kg"],
+      ["Romanian DL (DB)", "16kg ea", "18kg ea", "20kg ea", "22kg ea"],
+      ["Bulgarian Split Squat", "8kg ea", "10kg ea", "10kg ea", "12kg ea"],
+      ["Lat Pulldown", "30kg", "32.5kg", "35kg", "37.5kg"],
+      ["Seated Cable Row", "28kg", "30kg", "32.5kg", "35kg"],
+      ["Incline DB Press", "10kg ea", "11kg ea", "12kg ea", "12kg ea"],
+      ["DB Shoulder Press", "8kg ea", "9kg ea", "10kg ea", "10kg ea"],
+    ]
+  },
+  2: {
+    label: "Build", weeks: "5–8",
+    desc: "Hypertrophy push — calories at maintenance/small surplus, intensity climbs to RPE 7–8, key compounds get heavier. This is where the glutes actually grow. 2×8–10 dominant on accessories, 3+ sets on the big lifts.",
+    info: [
+      { label: "Weeks", val: "5–8", desc: "Build phase" },
+      { label: "Intensity", val: "RPE 7–8", desc: "Hard — 1–2 reps in reserve" },
+      { label: "Focus", val: "Glutes", desc: "Hypertrophy + heavier compounds" },
+    ],
+    days: [
+      {
+        label: "Day 1 — Glute & Quad (Heavy)",
+        badge: "GLUTE PRIORITY",
+        exercises: [
+          { name: "Hip Thrust", sets: "4", reps: "8", weight: "65kg", rest: "2 min", rpe: "8" },
+          { name: "Goblet Squat", sets: "3", reps: "8–10", weight: "24kg", rest: "90s", rpe: "8" },
+          { name: "Walking Lunges (DB)", sets: "2", reps: "10 each", weight: "12kg ea", rest: "90s", rpe: "8" },
+          { name: "Leg Extension", sets: "2", reps: "10", weight: "32kg", rest: "60s", rpe: "8" },
+          { name: "Standing Calf Raise", sets: "3", reps: "12", weight: "40kg", rest: "60s", rpe: "8" },
+          { name: "Cable Crunch", sets: "3", reps: "15", weight: "22kg", rest: "60s", rpe: "7" },
+        ]
+      },
+      {
+        label: "Day 2 — Upper Push",
+        badge: "PUSH",
+        exercises: [
+          { name: "Incline DB Chest Press", sets: "3", reps: "8", weight: "14kg ea", rest: "90s", rpe: "8" },
+          { name: "Dumbbell Shoulder Press", sets: "2", reps: "8–10", weight: "12kg ea", rest: "90s", rpe: "8" },
+          { name: "Cable Lateral Raise", sets: "3", reps: "12", weight: "6kg", rest: "60s", rpe: "8" },
+          { name: "Tricep Pushdown (Rope)", sets: "2", reps: "10", weight: "18kg", rest: "60s", rpe: "8" },
+          { name: "Overhead Tricep Extension (DB)", sets: "2", reps: "10", weight: "12kg", rest: "60s", rpe: "8" },
+          { name: "Hanging Knee Raises", sets: "3", reps: "10", weight: "BW", rest: "60s", rpe: "7" },
+        ]
+      },
+      {
+        label: "Day 3 — Glute Volume + Hamstring",
+        badge: "POSTERIOR CHAIN",
+        exercises: [
+          { name: "Romanian Deadlift (DB)", sets: "4", reps: "8", weight: "24kg ea", rest: "2 min", rpe: "8" },
+          { name: "Hip Thrust (Volume)", sets: "3", reps: "10–12", weight: "55kg", rest: "90s", rpe: "8" },
+          { name: "Bulgarian Split Squat", sets: "2", reps: "10 each", weight: "12kg ea", rest: "90s", rpe: "8" },
+          { name: "Lying Leg Curl", sets: "2", reps: "10", weight: "30kg", rest: "60s", rpe: "8" },
+          { name: "Cable Glute Kickback", sets: "3", reps: "12 each", weight: "14kg", rest: "60s", rpe: "8" },
+          { name: "Cable Crunch", sets: "3", reps: "15", weight: "22kg", rest: "60s", rpe: "7" },
+        ]
+      },
+      {
+        label: "Day 4 — Upper Pull",
+        badge: "PULL",
+        exercises: [
+          { name: "Lat Pulldown (Wide Grip)", sets: "3", reps: "8", weight: "40kg", rest: "90s", rpe: "8" },
+          { name: "Seated Cable Row", sets: "2", reps: "8–10", weight: "38kg", rest: "90s", rpe: "8" },
+          { name: "Single Arm DB Row", sets: "2", reps: "10 each", weight: "16kg ea", rest: "90s", rpe: "8" },
+          { name: "Face Pulls (Cable)", sets: "2", reps: "15", weight: "16kg", rest: "60s", rpe: "7" },
+          { name: "Cable Bicep Curl", sets: "2", reps: "10", weight: "16kg", rest: "60s", rpe: "8" },
+          { name: "DB Hammer Curl", sets: "2", reps: "10", weight: "8kg ea", rest: "60s", rpe: "8" },
+        ]
+      },
+      {
+        label: "Day 5 — Light Upper + Glute Pump",
+        badge: "ENDO-FRIENDLY",
+        exercises: [
+          { name: "Flat DB Chest Press", sets: "3", reps: "10", weight: "12kg ea", rest: "60s", rpe: "7" },
+          { name: "Chest-Supported Row", sets: "3", reps: "10", weight: "12kg ea", rest: "60s", rpe: "7" },
+          { name: "Dumbbell Lateral Raise", sets: "3", reps: "12", weight: "6kg ea", rest: "60s", rpe: "8" },
+          { name: "Cable Bicep Curl", sets: "2", reps: "10", weight: "16kg", rest: "60s", rpe: "8" },
+          { name: "Cable Tricep Pushdown", sets: "2", reps: "10", weight: "18kg", rest: "60s", rpe: "8" },
+          { name: "Cable Glute Kickback", sets: "3", reps: "12 each", weight: "12kg", rest: "60s", rpe: "8" },
+          { name: "Plank Hold", sets: "3", reps: "45 sec", weight: "BW", rest: "60s", rpe: "7" },
+        ]
+      },
+    ],
+    progression: [
+      ["Exercise", "Week 5", "Week 6", "Week 7", "Week 8"],
+      ["Hip Thrust", "65kg", "70kg", "75kg", "80kg"],
+      ["Hip Thrust (Vol)", "55kg", "57.5kg", "60kg", "62.5kg"],
+      ["Goblet Squat", "24kg", "26kg", "28kg", "30kg"],
+      ["Romanian DL (DB)", "24kg ea", "26kg ea", "28kg ea", "30kg ea"],
+      ["Bulgarian Split Squat", "12kg ea", "14kg ea", "14kg ea", "16kg ea"],
+      ["Lat Pulldown", "40kg", "42.5kg", "45kg", "47.5kg"],
+      ["Seated Cable Row", "38kg", "40kg", "42.5kg", "45kg"],
+      ["Incline DB Press", "14kg ea", "15kg ea", "16kg ea", "16kg ea"],
+      ["DB Shoulder Press", "12kg ea", "13kg ea", "14kg ea", "14kg ea"],
+    ]
+  },
+  3: {
+    label: "Refine", weeks: "9–12",
+    desc: "Mini-cut while keeping the muscle you just built. Volume stays close to Phase 2 (this protects the glutes during the deficit) but key compounds shift to 2×6–8 for strength expression. Slow weight loss expected — 0.3–0.5 kg/week is the target.",
+    info: [
+      { label: "Weeks", val: "9–12", desc: "Refine phase" },
+      { label: "Intensity", val: "RPE 8–9", desc: "Maximum effort — 0–1 RIR" },
+      { label: "Focus", val: "Lean", desc: "Keep muscle, cut fat" },
+    ],
+    days: [
+      {
+        label: "Day 1 — Glute & Quad (Heavy)",
+        badge: "GLUTE PRIORITY",
+        exercises: [
+          { name: "Hip Thrust", sets: "4", reps: "6–8", weight: "75kg", rest: "2–3 min", rpe: "8–9" },
+          { name: "Goblet Squat", sets: "3", reps: "8", weight: "30kg", rest: "90s", rpe: "8" },
+          { name: "Walking Lunges (DB)", sets: "2", reps: "8 each", weight: "14kg ea", rest: "90s", rpe: "8" },
+          { name: "Leg Extension", sets: "2", reps: "10", weight: "38kg", rest: "60s", rpe: "8" },
+          { name: "Standing Calf Raise", sets: "3", reps: "10", weight: "50kg", rest: "60s", rpe: "8" },
+          { name: "Hanging Leg Raise", sets: "3", reps: "10", weight: "BW", rest: "60s", rpe: "8" },
+        ]
+      },
+      {
+        label: "Day 2 — Upper Push",
+        badge: "PUSH",
+        exercises: [
+          { name: "Incline DB Chest Press", sets: "4", reps: "6–8", weight: "16kg ea", rest: "2 min", rpe: "8–9" },
+          { name: "Dumbbell Shoulder Press", sets: "2", reps: "8", weight: "14kg ea", rest: "90s", rpe: "8" },
+          { name: "Cable Lateral Raise", sets: "3", reps: "12", weight: "8kg", rest: "60s", rpe: "8" },
+          { name: "Cable Tricep Pushdown", sets: "2", reps: "10", weight: "22kg", rest: "60s", rpe: "8" },
+          { name: "Overhead Tricep Extension (DB)", sets: "2", reps: "10", weight: "14kg", rest: "60s", rpe: "8" },
+          { name: "Cable Crunch", sets: "3", reps: "15", weight: "28kg", rest: "60s", rpe: "8" },
+        ]
+      },
+      {
+        label: "Day 3 — Glute Volume + Hamstring",
+        badge: "POSTERIOR CHAIN",
+        exercises: [
+          { name: "Romanian Deadlift (DB)", sets: "4", reps: "6–8", weight: "30kg ea", rest: "2–3 min", rpe: "8–9" },
+          { name: "Hip Thrust (Volume)", sets: "3", reps: "10", weight: "65kg", rest: "90s", rpe: "8" },
+          { name: "Bulgarian Split Squat", sets: "2", reps: "8 each", weight: "14kg ea", rest: "90s", rpe: "8" },
+          { name: "Lying Leg Curl", sets: "2", reps: "10", weight: "35kg", rest: "60s", rpe: "8" },
+          { name: "Cable Glute Kickback", sets: "3", reps: "12 each", weight: "16kg", rest: "60s", rpe: "8" },
+          { name: "Cable Crunch", sets: "3", reps: "15", weight: "28kg", rest: "60s", rpe: "8" },
+        ]
+      },
+      {
+        label: "Day 4 — Upper Pull",
+        badge: "PULL",
+        exercises: [
+          { name: "Lat Pulldown (Wide Grip)", sets: "4", reps: "6–8", weight: "47.5kg", rest: "2 min", rpe: "8–9" },
+          { name: "Seated Cable Row", sets: "2", reps: "8", weight: "45kg", rest: "90s", rpe: "8" },
+          { name: "Single Arm DB Row", sets: "2", reps: "8 each", weight: "20kg ea", rest: "90s", rpe: "8" },
+          { name: "Face Pulls (Cable)", sets: "3", reps: "12", weight: "20kg", rest: "60s", rpe: "8" },
+          { name: "EZ Bar Curl", sets: "2", reps: "8", weight: "20kg", rest: "60s", rpe: "8" },
+          { name: "DB Hammer Curl", sets: "2", reps: "10", weight: "10kg ea", rest: "60s", rpe: "8" },
+        ]
+      },
+      {
+        label: "Day 5 — Light Upper + Glute Pump",
+        badge: "ENDO-FRIENDLY",
+        exercises: [
+          { name: "Flat DB Chest Press", sets: "3", reps: "10", weight: "14kg ea", rest: "60s", rpe: "8" },
+          { name: "Chest-Supported Row", sets: "3", reps: "10", weight: "14kg ea", rest: "60s", rpe: "8" },
+          { name: "Dumbbell Lateral Raise", sets: "3", reps: "10–12", weight: "8kg ea", rest: "60s", rpe: "8" },
+          { name: "Cable Bicep Curl", sets: "2", reps: "10", weight: "18kg", rest: "60s", rpe: "8" },
+          { name: "Cable Tricep Pushdown", sets: "2", reps: "10", weight: "22kg", rest: "60s", rpe: "8" },
+          { name: "Cable Glute Kickback", sets: "3", reps: "12 each", weight: "14kg", rest: "60s", rpe: "8" },
+          { name: "Plank Hold", sets: "3", reps: "60 sec", weight: "10kg plate", rest: "60s", rpe: "8" },
+        ]
+      },
+    ],
+    progression: [
+      ["Exercise", "Week 9", "Week 10", "Week 11", "Week 12"],
+      ["Hip Thrust", "75kg", "80kg", "82.5kg", "85kg"],
+      ["Hip Thrust (Vol)", "65kg", "67.5kg", "70kg", "72.5kg"],
+      ["Goblet Squat", "30kg", "32kg", "34kg", "36kg"],
+      ["Romanian DL (DB)", "30kg ea", "32kg ea", "34kg ea", "34kg ea"],
+      ["Bulgarian Split Squat", "14kg ea", "16kg ea", "16kg ea", "18kg ea"],
+      ["Lat Pulldown", "47.5kg", "50kg", "52.5kg", "55kg"],
+      ["Seated Cable Row", "45kg", "47.5kg", "50kg", "52.5kg"],
+      ["Incline DB Press", "16kg ea", "17kg ea", "18kg ea", "18kg ea"],
+      ["DB Shoulder Press", "14kg ea", "15kg ea", "16kg ea", "16kg ea"],
+    ]
+  }
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentPhase = 1;
+let currentDay = 0;
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const map = { training: 0, cardio: 1, nutrition: 2, lifestyle: 3, tracker: 4 };
+  btns[map[id]].classList.add('active');
+  window.scrollTo({ top: document.querySelector('.nav').offsetTop, behavior: 'smooth' });
+}
+
+// ─── TRAINING ───────────────────────────────────────────────────────────────
+function setPhase(n) {
+  currentPhase = n;
+  currentDay = 0;
+  document.querySelectorAll('.phase-tab').forEach((t, i) => t.classList.toggle('active', i === n - 1));
+  document.getElementById('lock-overlay').style.display = 'none';
+  document.getElementById('phase-info').style.display = '';
+  document.getElementById('day-tabs').style.display = '';
+  document.getElementById('workout-content').style.display = '';
+  document.getElementById('progression-content').style.display = '';
+  renderTraining();
+}
+
+function renderTraining() {
+  const p = phases[currentPhase];
+
+  // Phase info cards
+  document.getElementById('phase-info').innerHTML = p.info.map(i => `
+    <div class="info-card">
+      <div class="info-card-label">${i.label}</div>
+      <div class="info-card-val">${i.val}</div>
+      <div class="info-card-desc">${i.desc}</div>
+    </div>
+  `).join('');
+
+  // Day tabs
+  document.getElementById('day-tabs').innerHTML = p.days.map((d, i) => `
+    <button class="day-tab ${i === currentDay ? 'active' : ''}" onclick="setDay(${i})">${d.label}</button>
+  `).join('');
+
+  renderDay();
+}
+
+function setDay(i) {
+  currentDay = i;
+  document.querySelectorAll('.day-tab').forEach((t, j) => t.classList.toggle('active', j === i));
+  renderDay();
+}
+
+function getRpeClass(rpe) {
+  const r = parseFloat(rpe);
+  if (r <= 6) return 'rpe-6';
+  if (r <= 7) return 'rpe-7';
+  if (r <= 8) return 'rpe-8';
+  return 'rpe-9';
+}
+
+function renderDay() {
+  const p = phases[currentPhase];
+  const day = p.days[currentDay];
+  const isPhase1 = currentPhase === 1;
+
+  const rows = day.exercises.map(ex => {
+    const hasHowTo = howTos[ex.name];
+    const btn = hasHowTo ? `<button class="howto-btn" onclick="openModal('${ex.name.replace(/'/g,"\\'")}')">HOW TO</button>` : '';
+    return `
+      <tr>
+        <td class="ex-name">${ex.name}${isPhase1 ? btn : btn}</td>
+        <td class="ex-sets">${ex.sets}</td>
+        <td class="ex-reps">${ex.reps}</td>
+        <td class="ex-weight">${ex.weight}</td>
+        <td class="ex-rest">${ex.rest}</td>
+        <td class="ex-rpe"><span class="rpe-pill ${getRpeClass(ex.rpe)}">${ex.rpe}</span></td>
+      </tr>
+    `;
+  }).join('');
+
+  const progRows = p.progression.map((row, i) => {
+    if (i === 0) return `<tr>${row.map(h => `<th>${h}</th>`).join('')}</tr>`;
+    return `<tr>${row.map((v, j) => `<td>${v}</td>`).join('')}</tr>`;
+  }).join('');
+
+  document.getElementById('workout-content').innerHTML = `
+    <div class="workout-day-title">
+      ${day.label}
+      <span class="day-badge">${day.badge}</span>
+    </div>
+    <div class="workout-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th>Weight</th>
+            <th>Rest</th>
+            <th>RPE</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById('progression-content').innerHTML = `
+    <div class="section-tag" style="margin-bottom:0.75rem;">Weekly Progression</div>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;">Only increase weight if you hit the top of your rep range with good form.</p>
+    <div class="prog-table-wrap">
+      <table class="prog-table">
+        <tbody>${progRows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal(name) {
+  document.getElementById('modal-title').textContent = name;
+  document.getElementById('modal-body').textContent = howTos[name] || 'Instructions coming soon.';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalBtn();
+}
+
+function closeModalBtn() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ╔═════════════════════════════════════════════════════════════════════════╗
+// ║                                                                         ║
+// ║                CLIENT_CONFIG  —  EDIT THIS FOR EACH CLIENT              ║
+// ║                                                                         ║
+// ║   This is the only block you need to touch to spin up a new client's   ║
+// ║   program. Title, hero, weights, unlock codes, recipient email, sheet   ║
+// ║   URL, and storage keys all read from here.                             ║
+// ║                                                                         ║
+// ║   The training tables and meal plans are still hand-edited content —    ║
+// ║   look for the "║  EDIT ZONE  ║" banners further down in the file.      ║
+// ║                                                                         ║
+// ╚═════════════════════════════════════════════════════════════════════════╝
+const CLIENT_CONFIG = {
+  client: {
+    firstName:   'Ilham',
+    fullTitle:   "Ilham's 12-Week RECOMP",
+    heroLine1:   "ILHAM'S",
+    heroLine2:   'RECOMP',
+    heroSub:     'Glute-priority recomp · Restore → Build → Refine · Goal: Strong, lean, sustainable',
+    startWeight: 57,
+    goalWeight:  56,
+    storageKey:  'ilham',
+  },
+  trainer: {
+    recipientEmail: 'strengthbyo@gmail.com',
+  },
+  emailjs: {
+    serviceId:  'service_fshu1nl',
+    templateId: 'template_glftn89',
+    publicKey:  'jAvMcUPQEWFNIt-wA',
+  },
+  sheetsWebhookUrl: '',
+  phases: {
+    2: { unlockCode: 'ILHAM20', unlockAfterDays: 28 },
+    3: { unlockCode: 'ILHAM30', unlockAfterDays: 56 },
+  },
+  trainerPassword: 'OMARTRAINS',
+};;
+
+// ─── DERIVED — don't edit, these all read from CLIENT_CONFIG above ──────────
+// ─── TRACKER ─────────────────────────────────────────────────────────────────
+// EmailJS: emailjs.com → sign up → add Gmail service → create template with vars:
+// {{week}} {{weight}} {{lost}} {{energy}} {{sleep}} {{stress}} {{feeling}} {{notes}} {{date}}
+const EMAILJS_SERVICE_ID  = CLIENT_CONFIG.emailjs.serviceId;
+const EMAILJS_TEMPLATE_ID = CLIENT_CONFIG.emailjs.templateId;
+const EMAILJS_PUBLIC_KEY  = CLIENT_CONFIG.emailjs.publicKey;
+const SHEETS_WEBHOOK_URL  = CLIENT_CONFIG.sheetsWebhookUrl;
+const LS_KEYS = {
+  checkins: CLIENT_CONFIG.client.storageKey + '_checkins',
+  start:    CLIENT_CONFIG.client.storageKey + '_start',
+  unlocked: CLIENT_CONFIG.client.storageKey + '_unlocked',
+};
+try{if(typeof emailjs!=='undefined'&&EMAILJS_PUBLIC_KEY){emailjs.init({publicKey:EMAILJS_PUBLIC_KEY});}}catch(e){console.error('EmailJS init:',e);}
+
+let checkins=JSON.parse(localStorage.getItem(LS_KEYS.checkins)||'[]');
+let weightChart=null;
+
+async function saveCheckin(){
+  const weight=parseFloat(document.getElementById('input-weight').value);
+  const week=parseInt(document.getElementById('input-week').value);
+  const energy=parseInt(document.getElementById('input-energy').value)||null;
+  const sleep=parseInt(document.getElementById('input-sleep').value)||null;
+  const stress=parseInt(document.getElementById('input-stress').value)||null;
+  const feeling=parseInt(document.getElementById('input-feeling').value)||null;
+  const notes=document.getElementById('input-notes').value.trim()||'—';
+  if(!weight||!week){showStatus('⚠ Please enter at least weight and week number.','#ff4466');return;}
+  const lost=Math.max(0,weight-CLIENT_CONFIG.client.startWeight).toFixed(1);
+  const date=new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  checkins.unshift({weight,week,energy,sleep,stress,feeling,notes,date,lost});
+  localStorage.setItem(LS_KEYS.checkins,JSON.stringify(checkins));
+  const btn=document.getElementById('log-btn');
+  btn.textContent='⏳ Sending...';btn.disabled=true;
+  let emailOk=false,sheetsOk=false;
+  if(EMAILJS_SERVICE_ID){
+    try{
+      const emailPayload = {
+        service_id: EMAILJS_SERVICE_ID,
+        template_id: EMAILJS_TEMPLATE_ID,
+        user_id: EMAILJS_PUBLIC_KEY,
+        template_params: {
+          to_email: CLIENT_CONFIG.trainer.recipientEmail,
+          week: String(week),
+          weight: String(weight),
+          lost: String(lost),
+          energy: energy ? String(energy) : '—',
+          sleep: sleep ? String(sleep) : '—',
+          stress: stress ? String(stress) : '—',
+          feeling: feeling ? String(feeling) : '—',
+          notes: notes,
+          date: date
+        }
+      };
+      const emailResponse = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(emailPayload)
+      });
+      emailOk = emailResponse.status === 200;
+      console.log('Email response:', emailResponse.status);
+    } catch(err) {
+      console.error('Email failed:', err);
+      emailOk = false;
+    }
+  }
+  if(SHEETS_WEBHOOK_URL){
+    try{await fetch(SHEETS_WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({week:String(week),weight:String(weight),lost:String(lost),energy:energy||'—',sleep:sleep||'—',stress:stress||'—',feeling:feeling||'—',notes:notes,date:date})});sheetsOk=true;console.log('Sheet updated');}catch(err){console.error('Sheets:',err);sheetsOk=false;}
+  }
+  showStatus('✅ Logged! '+(emailOk?'📧 Email sent':'⚠ Email failed')+' · '+(sheetsOk?'📊 Sheet updated':'⚠ Sheet failed'),emailOk&&sheetsOk?'var(--accent3)':'var(--accent2)');
+  btn.textContent='📊 Log Check-In + Send to Trainer';btn.disabled=false;
+  ['input-weight','input-week','input-energy','input-sleep','input-stress','input-feeling'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('input-notes').value='';
+  updateProgress(weight);renderCheckins();renderChart();
+}
+
+function showStatus(msg,color){
+  const el=document.getElementById('send-status');
+  el.style.display='block';el.style.background='var(--surface)';el.style.border='1px solid '+color;el.style.color=color;el.textContent=msg;
+  setTimeout(()=>{el.style.display='none';},7000);
+}
+
+function updateProgress(weight){
+  const start=CLIENT_CONFIG.client.startWeight,goal=CLIENT_CONFIG.client.goalWeight;
+  const lost=Math.max(0,start-weight);
+  const pct=Math.min(100,Math.round((lost/(start-goal))*100));
+  document.getElementById('progress-bar').style.width=pct+'%';
+  document.getElementById('progress-text').textContent=pct+'%';
+  const toGoal=Math.max(0,weight-goal).toFixed(1);
+  const avgLoss=checkins.length>1?((weight-CLIENT_CONFIG.client.startWeight)/(checkins.length-1)).toFixed(2)+'kg/wk':'—';
+  document.getElementById('total-lost-display').textContent=lost.toFixed(1)+' kg';
+  document.getElementById('to-goal-display').textContent=toGoal+' kg';
+  document.getElementById('avg-loss-display').textContent=avgLoss;
+  document.getElementById('weight-lost-display').style.display='flex';
+}
+
+function renderCheckins(){
+  const el=document.getElementById('checkin-list');
+  if(!checkins.length){el.innerHTML='<div class="checkin-empty">No check-ins yet. Log your first one above!</div>';return;}
+  el.innerHTML=checkins.map((c,i)=>`
+    <div class="checkin-row">
+      <div style="flex:1;">
+        <div style="font-weight:500;">Week ${c.week} · ${c.weight}kg <span style="color:var(--accent3);font-size:0.85rem;">↓${c.lost}kg total</span></div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem;">${c.date}</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem;">${c.energy?'⚡'+c.energy+'/10 ':''}${c.sleep?'😴'+c.sleep+'/10 ':''}${c.stress?'🧠'+c.stress+'/10 ':''}${c.feeling?'✨'+c.feeling+'/10':''}</div>
+        ${c.notes&&c.notes!=='—'?'<div style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem;font-style:italic;">"'+c.notes+'"</div>':''}
+      </div>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <div class="checkin-weight">${c.weight}<span style="font-size:1rem;">kg</span></div>
+        <button class="checkin-del" onclick="deleteCheckin(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderChart(){
+  if(checkins.length<2)return;
+  document.getElementById('chart-section').style.display='block';
+  const sorted=[...checkins].reverse();
+  const labels=sorted.map(c=>'Wk '+c.week);
+  const data=sorted.map(c=>c.weight);
+  if(weightChart)weightChart.destroy();
+  const ctx=document.getElementById('weight-chart').getContext('2d');
+  weightChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Weight (kg)',data,borderColor:'#4f7fff',backgroundColor:'rgba(79,127,255,0.1)',borderWidth:2,pointBackgroundColor:'#4f7fff',pointRadius:5,tension:0.3,fill:true},{label:'Goal ('+CLIENT_CONFIG.client.goalWeight+'kg)',data:Array(labels.length).fill(CLIENT_CONFIG.client.goalWeight),borderColor:'#00e5a0',borderWidth:1,borderDash:[5,5],pointRadius:0,fill:false}]},options:{responsive:true,plugins:{legend:{labels:{color:'#6b6b8a',font:{family:'DM Sans'}}}},scales:{x:{ticks:{color:'#6b6b8a'},grid:{color:'#2a2a3d'}},y:{ticks:{color:'#6b6b8a'},grid:{color:'#2a2a3d'},min:Math.floor(CLIENT_CONFIG.client.goalWeight-5),max:Math.ceil(CLIENT_CONFIG.client.startWeight+4)}}}});
+}
+
+function deleteCheckin(i){
+  checkins.splice(i,1);
+  localStorage.setItem(LS_KEYS.checkins,JSON.stringify(checkins));
+  renderCheckins();renderChart();
+  if(checkins.length>0)updateProgress(checkins[0].weight);
+  else{document.getElementById('progress-bar').style.width='0%';document.getElementById('progress-text').textContent='0%';document.getElementById('weight-lost-display').style.display='none';if(weightChart){weightChart.destroy();weightChart=null;}document.getElementById('chart-section').style.display='none';}
+}
+
+
+// ╔═════════════════════════════════════════════════════════════════════════╗
+// ║  EDIT ZONE — NUTRITION                                                  ║
+// ║  phaseTargets: per-phase macros (calories, protein, carbs, fat,         ║
+// ║                deficit) — adjust per client's bodyweight.               ║
+// ║  mealPlan[N]:  one array per program week (1–12). Each entry is a       ║
+// ║                mkday([mkm(time, name, desc, cal, p, c, f), ...])        ║
+// ║                Edit times, meal names, ingredient descriptions, kcal,   ║
+// ║                and macros per meal.                                     ║
+// ╚═════════════════════════════════════════════════════════════════════════╝
+const phaseTargets = {
+  1: { cal: 1800, p: 131, c: 191, f: 57, deficit: 100 },
+  2: { cal: 2000, p: 131, c: 227, f: 63, deficit: 50 },
+  3: { cal: 1700, p: 131, c: 166, f: 57, deficit: 50 },
+};
+
+const DAY_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const DAY_TYPES=['Weights','Weights','Weights','Weights','Weights','Rest','Rest + Meal Prep'];
+
+const mealPlan = {};
+function mkday(meals){return{meals};}
+function mkm(time,name,desc,cal,p,c,f){return{time,name,desc,cal,p,c,f};}
+
+// Week 1 — Phase 1
+mealPlan[1] = [mkday([mkm('7:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',345,21,31,15),mkm('10:30am','Whey + Banana','25g whey shake + 1 banana',211,21,27,3),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',441,36,17,21),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',211,21,27,3),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',402,29,25,21),mkm('9:30pm','Pre-Bed','150g cottage cheese',105,16,5,4)]),mkday([mkm('7:00am','Protein Oats','50g oats + 25g whey + ½ banana + cinnamon + 150ml milk',364,31,50,6),mkm('10:30am','Lebneh + Veg','80g lebneh + cucumber + 4 wholegrain crackers',249,11,27,11),mkm('1:00pm','Beef Mince Bowl','150g lean beef mince + ½ cup rice + capsicum + sriracha',460,36,42,15),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',192,21,21,2),mkm('7:30pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',441,31,44,13),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',144,23,8,3)]),mkday([mkm('7:00am','Avocado Toast','2 eggs + 1 toast + ¼ avocado + tomato + lemon',345,17,21,21),mkm('10:30am','Boiled Eggs + Crackers','2 boiled eggs + 4 wholegrain crackers + tomato',230,15,17,11),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',441,36,17,21),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',192,11,31,4),mkm('7:30pm','Grilled Chicken + Veg','150g chicken + roasted zucchini + capsicum + ¼ cup rice',402,36,27,15),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',144,21,8,3)]),mkday([mkm('7:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',364,21,27,17),mkm('10:30am','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',172,23,17,4),mkm('1:00pm','Beef Mince Bowl','150g lean beef mince + ½ cup rice + capsicum + sriracha',460,36,42,15),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',268,21,23,8),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',421,31,34,17),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',124,17,10,4)]),mkday([mkm('7:00am','Protein Pancakes','2 eggs + 30g oats + 25g whey, blended, berries on top',345,29,31,10),mkm('10:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',268,21,36,8),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',441,36,17,21),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',192,6,27,9),mkm('7:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',421,31,27,21),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',153,11,21,4)]),mkday([mkm('8:30am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',364,21,27,17),mkm('11:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',230,17,27,4),mkm('2:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',460,31,11,29),mkm('5:00pm','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',249,23,31,5),mkm('8:00pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',421,31,27,21),mkm('9:30pm','Pre-Bed','150g cottage cheese',105,16,5,4)]),mkday([mkm('9:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',345,21,21,17),mkm('11:30am','Whey + Almonds','25g whey + 15g almonds',211,23,6,11),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',316,40,31,5),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',421,36,40,10),mkm('8:00pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',441,31,44,13),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',144,23,8,3)])];
+// Week 2 — Phase 1
+mealPlan[2] = [mkday([mkm('7:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',364,27,17,21),mkm('10:30am','Whey + Almonds','25g whey + 15g almonds',211,23,6,11),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',479,34,34,17),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',192,11,31,4),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',421,31,34,17),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',144,23,8,3)]),mkday([mkm('7:00am','Cottage Cheese Toast','200g cottage cheese + 1 toast + 1 tsp jam + berries',326,27,36,6),mkm('10:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',211,23,17,4),mkm('1:00pm','Chicken & Rice','150g chicken breast + ½ cup brown rice + steamed broccoli',421,40,50,6),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',268,21,23,8),mkm('7:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',421,31,27,21),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',144,21,8,3)]),mkday([mkm('7:00am','Protein Smoothie','25g whey + 1 banana + 200ml milk + 1 tbsp PB + ice',364,31,36,11),mkm('10:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',230,17,27,4),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',479,34,34,17),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',192,6,27,9),mkm('7:30pm','Turkey Mince Bowl','150g turkey mince + capsicum + onion + ½ cup rice + chili',402,36,36,11),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',124,17,10,4)]),mkday([mkm('7:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',345,21,21,17),mkm('10:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',249,23,31,5),mkm('1:00pm','Chicken & Rice','150g chicken breast + ½ cup brown rice + steamed broccoli',421,40,50,6),mkm('4:00pm','Pre-Workout','25g whey + 2 dates',211,21,27,2),mkm('7:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',421,36,40,10),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',153,11,21,4)]),mkday([mkm('7:00am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',345,21,50,6),mkm('10:30am','Hummus + Pita','1 small pita + 50g hummus + cucumber sticks',268,8,33,13),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',479,34,34,17),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',230,23,25,4),mkm('7:30pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',402,27,23,21),mkm('9:30pm','Pre-Bed','150g cottage cheese',105,16,5,4)]),mkday([mkm('8:30am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',345,21,50,6),mkm('11:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',211,23,17,4),mkm('2:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',479,34,34,17),mkm('5:00pm','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',172,23,17,4),mkm('8:00pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',402,27,23,21),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',144,23,8,3)]),mkday([mkm('9:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',364,21,27,17),mkm('11:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',211,23,17,4),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',316,40,31,5),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Turkey Mince Bowl','150g turkey mince + capsicum + onion + ½ cup rice + chili',402,36,36,11),mkm('8:00pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',421,36,40,10),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',144,21,8,3)])];
+// Week 3 — Phase 1
+mealPlan[3] = [mkday([mkm('7:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',364,21,27,17),mkm('10:30am','Whey + Banana','25g whey shake + 1 banana',211,21,27,3),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',460,31,11,29),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',192,6,27,9),mkm('7:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',421,36,40,10),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',144,21,8,3)]),mkday([mkm('7:00am','Protein Pancakes','2 eggs + 30g oats + 25g whey, blended, berries on top',345,29,31,10),mkm('10:30am','Lebneh + Veg','80g lebneh + cucumber + 4 wholegrain crackers',249,11,27,11),mkm('1:00pm','Sushi-Style Bowl','100g salmon + ½ cup rice + edamame + cucumber + soy + sesame',431,25,50,13),mkm('4:00pm','Pre-Workout','25g whey + 2 dates',211,21,27,2),mkm('7:30pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',402,27,23,21),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',124,17,10,4)]),mkday([mkm('7:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',345,21,31,15),mkm('10:30am','Boiled Eggs + Crackers','2 boiled eggs + 4 wholegrain crackers + tomato',230,15,17,11),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',460,31,11,29),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',230,23,25,4),mkm('7:30pm','White Fish + Sweet Potato','150g white fish (snapper/cod) + 150g sweet potato + greens',364,31,31,10),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',153,11,21,4)]),mkday([mkm('7:00am','Protein Oats','50g oats + 25g whey + ½ banana + cinnamon + 150ml milk',364,31,50,6),mkm('10:30am','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',172,23,17,4),mkm('1:00pm','Sushi-Style Bowl','100g salmon + ½ cup rice + edamame + cucumber + soy + sesame',431,25,50,13),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',211,21,27,3),mkm('7:30pm','Lean Lamb Plate','130g lean lamb mince + tabbouleh + 30g lebneh + lemon',402,27,17,25),mkm('9:30pm','Pre-Bed','150g cottage cheese',105,16,5,4)]),mkday([mkm('7:00am','Avocado Toast','2 eggs + 1 toast + ¼ avocado + tomato + lemon',345,17,21,21),mkm('10:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',268,21,36,8),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',460,31,11,29),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',192,21,21,2),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',402,29,25,21),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',144,23,8,3)]),mkday([mkm('8:30am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',364,21,27,17),mkm('11:30am','Whey + Almonds','25g whey + 15g almonds',211,23,6,11),mkm('2:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',441,36,17,21),mkm('5:00pm','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',249,23,31,5),mkm('8:00pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',402,29,25,21),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',144,21,8,3)]),mkday([mkm('9:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',364,27,17,21),mkm('11:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',230,17,27,4),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',316,40,31,5),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',421,31,27,21),mkm('8:00pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',441,31,44,13),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',124,17,10,4)])];
+// Week 4 — Phase 1
+mealPlan[4] = [mkday([mkm('7:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',345,21,21,17),mkm('10:30am','Whey + Almonds','25g whey + 15g almonds',211,23,6,11),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',421,34,38,11),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',230,23,25,4),mkm('7:30pm','Lean Lamb Plate','130g lean lamb mince + tabbouleh + 30g lebneh + lemon',402,27,17,25),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',124,17,10,4)]),mkday([mkm('7:00am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',345,21,50,6),mkm('10:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',211,23,17,4),mkm('1:00pm','Chicken Fajita Wrap','130g chicken + 1 wrap + peppers + salsa + light cheese 20g',441,36,38,13),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',211,21,27,3),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',402,29,25,21),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',153,11,21,4)]),mkday([mkm('7:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',364,27,17,21),mkm('10:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',230,17,27,4),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',421,34,38,11),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',192,21,21,2),mkm('7:30pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',441,31,44,13),mkm('9:30pm','Pre-Bed','150g cottage cheese',105,16,5,4)]),mkday([mkm('7:00am','Cottage Cheese Toast','200g cottage cheese + 1 toast + 1 tsp jam + berries',326,27,36,6),mkm('10:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',249,23,31,5),mkm('1:00pm','Chicken Fajita Wrap','130g chicken + 1 wrap + peppers + salsa + light cheese 20g',441,36,38,13),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',192,11,31,4),mkm('7:30pm','Grilled Chicken + Veg','150g chicken + roasted zucchini + capsicum + ¼ cup rice',402,36,27,15),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',144,23,8,3)]),mkday([mkm('7:00am','Protein Smoothie','25g whey + 1 banana + 200ml milk + 1 tbsp PB + ice',364,31,36,11),mkm('10:30am','Hummus + Pita','1 small pita + 50g hummus + cucumber sticks',268,8,33,13),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',421,34,38,11),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',268,21,23,8),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',421,31,34,17),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',144,21,8,3)]),mkday([mkm('8:30am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',345,21,50,6),mkm('11:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',268,21,36,8),mkm('2:00pm','Quinoa Buddha Bowl','130g chicken + ½ cup quinoa + roasted veg + lemon tahini',460,34,40,15),mkm('5:00pm','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',172,23,17,4),mkm('8:00pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',421,31,34,17),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',124,17,10,4)]),mkday([mkm('9:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',345,21,31,15),mkm('11:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',249,23,31,5),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',316,40,31,5),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',421,31,34,17),mkm('8:00pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',421,36,40,10),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',153,11,21,4)])];
+// Week 5 — Phase 2
+mealPlan[5] = [mkday([mkm('7:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',380,23,34,17),mkm('10:30am','Whey + Banana','25g whey shake + 1 banana',232,23,30,3),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',486,40,19,23),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',232,23,30,3),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',444,32,27,23),mkm('9:30pm','Pre-Bed','150g cottage cheese',116,18,5,4)]),mkday([mkm('7:00am','Protein Oats','50g oats + 25g whey + ½ banana + cinnamon + 150ml milk',401,34,55,6),mkm('10:30am','Lebneh + Veg','80g lebneh + cucumber + 4 wholegrain crackers',275,13,30,13),mkm('1:00pm','Beef Mince Bowl','150g lean beef mince + ½ cup rice + capsicum + sriracha',507,40,46,17),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',211,23,23,2),mkm('7:30pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',486,34,49,15),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',158,25,8,3)]),mkday([mkm('7:00am','Avocado Toast','2 eggs + 1 toast + ¼ avocado + tomato + lemon',380,19,23,23),mkm('10:30am','Boiled Eggs + Crackers','2 boiled eggs + 4 wholegrain crackers + tomato',253,17,19,13),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',486,40,19,23),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',211,13,34,4),mkm('7:30pm','Grilled Chicken + Veg','150g chicken + roasted zucchini + capsicum + ¼ cup rice',444,40,30,17),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',158,23,8,3)]),mkday([mkm('7:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',401,23,30,19),mkm('10:30am','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',190,25,19,4),mkm('1:00pm','Beef Mince Bowl','150g lean beef mince + ½ cup rice + capsicum + sriracha',507,40,46,17),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',296,23,25,8),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',465,34,38,19),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',137,19,11,4)]),mkday([mkm('7:00am','Protein Pancakes','2 eggs + 30g oats + 25g whey, blended, berries on top',380,32,34,11),mkm('10:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',296,23,40,8),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',486,40,19,23),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',211,6,30,10),mkm('7:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',465,34,30,23),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',169,13,23,4)]),mkday([mkm('8:30am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',401,23,30,19),mkm('11:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',253,19,30,4),mkm('2:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',507,34,13,32),mkm('5:00pm','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',275,25,34,5),mkm('8:00pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',465,34,30,23),mkm('9:30pm','Pre-Bed','150g cottage cheese',116,18,5,4)]),mkday([mkm('9:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',380,23,23,19),mkm('11:30am','Whey + Almonds','25g whey + 15g almonds',232,25,6,13),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',454,44,34,15),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',465,40,44,11),mkm('8:00pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',486,34,49,15),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',158,25,8,3)])];
+// Week 6 — Phase 2
+mealPlan[6] = [mkday([mkm('7:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',401,30,19,23),mkm('10:30am','Whey + Almonds','25g whey + 15g almonds',232,25,6,13),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',528,38,38,19),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',211,13,34,4),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',465,34,38,19),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',158,25,8,3)]),mkday([mkm('7:00am','Cottage Cheese Toast','200g cottage cheese + 1 toast + 1 tsp jam + berries',359,30,40,6),mkm('10:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',232,25,19,4),mkm('1:00pm','Chicken & Rice','150g chicken breast + ½ cup brown rice + steamed broccoli',465,44,55,6),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',296,23,25,8),mkm('7:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',465,34,30,23),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',158,23,8,3)]),mkday([mkm('7:00am','Protein Smoothie','25g whey + 1 banana + 200ml milk + 1 tbsp PB + ice',401,34,40,13),mkm('10:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',253,19,30,4),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',528,38,38,19),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',211,6,30,10),mkm('7:30pm','Turkey Mince Bowl','150g turkey mince + capsicum + onion + ½ cup rice + chili',444,40,40,13),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',137,19,11,4)]),mkday([mkm('7:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',380,23,23,19),mkm('10:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',275,25,34,5),mkm('1:00pm','Chicken & Rice','150g chicken breast + ½ cup brown rice + steamed broccoli',465,44,55,6),mkm('4:00pm','Pre-Workout','25g whey + 2 dates',232,23,30,2),mkm('7:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',465,40,44,11),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',169,13,23,4)]),mkday([mkm('7:00am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',380,23,55,6),mkm('10:30am','Hummus + Pita','1 small pita + 50g hummus + cucumber sticks',296,8,36,15),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',528,38,38,19),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',253,25,27,4),mkm('7:30pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',444,30,25,23),mkm('9:30pm','Pre-Bed','150g cottage cheese',116,18,5,4)]),mkday([mkm('8:30am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',380,23,55,6),mkm('11:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',232,25,19,4),mkm('2:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',528,38,38,19),mkm('5:00pm','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',190,25,19,4),mkm('8:00pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',444,30,25,23),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',158,25,8,3)]),mkday([mkm('9:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',401,23,30,19),mkm('11:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',232,25,19,4),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',454,44,34,15),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Turkey Mince Bowl','150g turkey mince + capsicum + onion + ½ cup rice + chili',444,40,40,13),mkm('8:00pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',465,40,44,11),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',158,23,8,3)])];
+// Week 7 — Phase 2
+mealPlan[7] = [mkday([mkm('7:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',401,23,30,19),mkm('10:30am','Whey + Banana','25g whey shake + 1 banana',232,23,30,3),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',507,34,13,32),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',211,6,30,10),mkm('7:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',465,40,44,11),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',158,23,8,3)]),mkday([mkm('7:00am','Protein Pancakes','2 eggs + 30g oats + 25g whey, blended, berries on top',380,32,34,11),mkm('10:30am','Lebneh + Veg','80g lebneh + cucumber + 4 wholegrain crackers',275,13,30,13),mkm('1:00pm','Sushi-Style Bowl','100g salmon + ½ cup rice + edamame + cucumber + soy + sesame',475,27,55,15),mkm('4:00pm','Pre-Workout','25g whey + 2 dates',232,23,30,2),mkm('7:30pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',444,30,25,23),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',137,19,11,4)]),mkday([mkm('7:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',380,23,34,17),mkm('10:30am','Boiled Eggs + Crackers','2 boiled eggs + 4 wholegrain crackers + tomato',253,17,19,13),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',507,34,13,32),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',253,25,27,4),mkm('7:30pm','White Fish + Sweet Potato','150g white fish (snapper/cod) + 150g sweet potato + greens',401,34,34,11),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',169,13,23,4)]),mkday([mkm('7:00am','Protein Oats','50g oats + 25g whey + ½ banana + cinnamon + 150ml milk',401,34,55,6),mkm('10:30am','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',190,25,19,4),mkm('1:00pm','Sushi-Style Bowl','100g salmon + ½ cup rice + edamame + cucumber + soy + sesame',475,27,55,15),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',232,23,30,3),mkm('7:30pm','Lean Lamb Plate','130g lean lamb mince + tabbouleh + 30g lebneh + lemon',444,30,19,27),mkm('9:30pm','Pre-Bed','150g cottage cheese',116,18,5,4)]),mkday([mkm('7:00am','Avocado Toast','2 eggs + 1 toast + ¼ avocado + tomato + lemon',380,19,23,23),mkm('10:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',296,23,40,8),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',507,34,13,32),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',211,23,23,2),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',444,32,27,23),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',158,25,8,3)]),mkday([mkm('8:30am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',401,23,30,19),mkm('11:30am','Whey + Almonds','25g whey + 15g almonds',232,25,6,13),mkm('2:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',486,40,19,23),mkm('5:00pm','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',275,25,34,5),mkm('8:00pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',444,32,27,23),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',158,23,8,3)]),mkday([mkm('9:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',401,30,19,23),mkm('11:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',253,19,30,4),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',454,44,34,15),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',465,34,30,23),mkm('8:00pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',486,34,49,15),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',137,19,11,4)])];
+// Week 8 — Phase 2
+mealPlan[8] = [mkday([mkm('7:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',380,23,23,19),mkm('10:30am','Whey + Almonds','25g whey + 15g almonds',232,25,6,13),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',465,38,42,13),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',253,25,27,4),mkm('7:30pm','Lean Lamb Plate','130g lean lamb mince + tabbouleh + 30g lebneh + lemon',444,30,19,27),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',137,19,11,4)]),mkday([mkm('7:00am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',380,23,55,6),mkm('10:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',232,25,19,4),mkm('1:00pm','Chicken Fajita Wrap','130g chicken + 1 wrap + peppers + salsa + light cheese 20g',486,40,42,15),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',232,23,30,3),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',444,32,27,23),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',169,13,23,4)]),mkday([mkm('7:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',401,30,19,23),mkm('10:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',253,19,30,4),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',465,38,42,13),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',211,23,23,2),mkm('7:30pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',486,34,49,15),mkm('9:30pm','Pre-Bed','150g cottage cheese',116,18,5,4)]),mkday([mkm('7:00am','Cottage Cheese Toast','200g cottage cheese + 1 toast + 1 tsp jam + berries',359,30,40,6),mkm('10:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',275,25,34,5),mkm('1:00pm','Chicken Fajita Wrap','130g chicken + 1 wrap + peppers + salsa + light cheese 20g',486,40,42,15),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',211,13,34,4),mkm('7:30pm','Grilled Chicken + Veg','150g chicken + roasted zucchini + capsicum + ¼ cup rice',444,40,30,17),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',158,25,8,3)]),mkday([mkm('7:00am','Protein Smoothie','25g whey + 1 banana + 200ml milk + 1 tbsp PB + ice',401,34,40,13),mkm('10:30am','Hummus + Pita','1 small pita + 50g hummus + cucumber sticks',296,8,36,15),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',465,38,42,13),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',296,23,25,8),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',465,34,38,19),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',158,23,8,3)]),mkday([mkm('8:30am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',380,23,55,6),mkm('11:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',296,23,40,8),mkm('2:00pm','Quinoa Buddha Bowl','130g chicken + ½ cup quinoa + roasted veg + lemon tahini',507,38,44,17),mkm('5:00pm','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',190,25,19,4),mkm('8:00pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',465,34,38,19),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',137,19,11,4)]),mkday([mkm('9:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',380,23,34,17),mkm('11:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',275,25,34,5),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',454,44,34,15),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',465,34,38,19),mkm('8:00pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',465,40,44,11),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',169,13,23,4)])];
+// Week 9 — Phase 3
+mealPlan[9] = [mkday([mkm('7:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',326,20,29,14),mkm('10:30am','Whey + Banana','25g whey shake + 1 banana',199,20,25,3),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',416,34,16,20),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',199,20,25,3),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',380,27,24,20),mkm('9:30pm','Pre-Bed','150g cottage cheese',99,15,5,4)]),mkday([mkm('7:00am','Protein Oats','50g oats + 25g whey + ½ banana + cinnamon + 150ml milk',344,29,47,5),mkm('10:30am','Lebneh + Veg','80g lebneh + cucumber + 4 wholegrain crackers',235,11,25,11),mkm('1:00pm','Beef Mince Bowl','150g lean beef mince + ½ cup rice + capsicum + sriracha',434,34,40,14),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',181,20,20,2),mkm('7:30pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',416,29,42,13),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',136,22,7,3)]),mkday([mkm('7:00am','Avocado Toast','2 eggs + 1 toast + ¼ avocado + tomato + lemon',326,16,20,20),mkm('10:30am','Boiled Eggs + Crackers','2 boiled eggs + 4 wholegrain crackers + tomato',217,14,16,11),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',416,34,16,20),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',181,11,29,4),mkm('7:30pm','Grilled Chicken + Veg','150g chicken + roasted zucchini + capsicum + ¼ cup rice',380,34,25,14),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',136,20,7,3)]),mkday([mkm('7:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',344,20,25,16),mkm('10:30am','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',163,22,16,4),mkm('1:00pm','Beef Mince Bowl','150g lean beef mince + ½ cup rice + capsicum + sriracha',434,34,40,14),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',253,20,22,7),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',398,29,33,16),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',118,16,9,4)]),mkday([mkm('7:00am','Protein Pancakes','2 eggs + 30g oats + 25g whey, blended, berries on top',326,27,29,9),mkm('10:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',253,20,34,7),mkm('1:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',416,34,16,20),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',181,5,25,8),mkm('7:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',398,29,25,20),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',145,11,20,4)]),mkday([mkm('8:30am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',344,20,25,16),mkm('11:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',217,16,25,4),mkm('2:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',434,29,11,27),mkm('5:00pm','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',235,22,29,5),mkm('8:00pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',398,29,25,20),mkm('9:30pm','Pre-Bed','150g cottage cheese',99,15,5,4)]),mkday([mkm('9:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',326,20,20,16),mkm('11:30am','Whey + Almonds','25g whey + 15g almonds',199,22,5,11),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',298,38,29,5),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',398,34,38,9),mkm('8:00pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',416,29,42,13),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',136,22,7,3)])];
+// Week 10 — Phase 3
+mealPlan[10] = [mkday([mkm('7:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',344,25,16,20),mkm('10:30am','Whey + Almonds','25g whey + 15g almonds',199,22,5,11),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',452,33,33,16),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',181,11,29,4),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',398,29,33,16),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',136,22,7,3)]),mkday([mkm('7:00am','Cottage Cheese Toast','200g cottage cheese + 1 toast + 1 tsp jam + berries',308,25,34,5),mkm('10:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',199,22,16,4),mkm('1:00pm','Chicken & Rice','150g chicken breast + ½ cup brown rice + steamed broccoli',398,38,47,5),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',253,20,22,7),mkm('7:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',398,29,25,20),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',136,20,7,3)]),mkday([mkm('7:00am','Protein Smoothie','25g whey + 1 banana + 200ml milk + 1 tbsp PB + ice',344,29,34,11),mkm('10:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',217,16,25,4),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',452,33,33,16),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',181,5,25,8),mkm('7:30pm','Turkey Mince Bowl','150g turkey mince + capsicum + onion + ½ cup rice + chili',380,34,34,11),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',118,16,9,4)]),mkday([mkm('7:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',326,20,20,16),mkm('10:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',235,22,29,5),mkm('1:00pm','Chicken & Rice','150g chicken breast + ½ cup brown rice + steamed broccoli',398,38,47,5),mkm('4:00pm','Pre-Workout','25g whey + 2 dates',199,20,25,2),mkm('7:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',398,34,38,9),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',145,11,20,4)]),mkday([mkm('7:00am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',326,20,47,5),mkm('10:30am','Hummus + Pita','1 small pita + 50g hummus + cucumber sticks',253,7,31,13),mkm('1:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',452,33,33,16),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',217,22,24,4),mkm('7:30pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',380,25,22,20),mkm('9:30pm','Pre-Bed','150g cottage cheese',99,15,5,4)]),mkday([mkm('8:30am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',326,20,47,5),mkm('11:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',199,22,16,4),mkm('2:00pm','Mediterranean Plate','150g chicken + 50g hummus + ½ pita + tabbouleh + lebneh 30g',452,33,33,16),mkm('5:00pm','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',163,22,16,4),mkm('8:00pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',380,25,22,20),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',136,22,7,3)]),mkday([mkm('9:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',344,20,25,16),mkm('11:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',199,22,16,4),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',298,38,29,5),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Turkey Mince Bowl','150g turkey mince + capsicum + onion + ½ cup rice + chili',380,34,34,11),mkm('8:00pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',398,34,38,9),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',136,20,7,3)])];
+// Week 11 — Phase 3
+mealPlan[11] = [mkday([mkm('7:00am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',344,20,25,16),mkm('10:30am','Whey + Banana','25g whey shake + 1 banana',199,20,25,3),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',434,29,11,27),mkm('4:00pm','Pre-Workout','1 banana + 1 tbsp PB',181,5,25,8),mkm('7:30pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',398,34,38,9),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',136,20,7,3)]),mkday([mkm('7:00am','Protein Pancakes','2 eggs + 30g oats + 25g whey, blended, berries on top',326,27,29,9),mkm('10:30am','Lebneh + Veg','80g lebneh + cucumber + 4 wholegrain crackers',235,11,25,11),mkm('1:00pm','Sushi-Style Bowl','100g salmon + ½ cup rice + edamame + cucumber + soy + sesame',407,24,47,13),mkm('4:00pm','Pre-Workout','25g whey + 2 dates',199,20,25,2),mkm('7:30pm','Salmon Stir-Fry','130g salmon flakes + bok choy + capsicum + ¼ cup rice + soy',380,25,22,20),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',118,16,9,4)]),mkday([mkm('7:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',326,20,29,14),mkm('10:30am','Boiled Eggs + Crackers','2 boiled eggs + 4 wholegrain crackers + tomato',217,14,16,11),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',434,29,11,27),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',217,22,24,4),mkm('7:30pm','White Fish + Sweet Potato','150g white fish (snapper/cod) + 150g sweet potato + greens',344,29,29,9),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',145,11,20,4)]),mkday([mkm('7:00am','Protein Oats','50g oats + 25g whey + ½ banana + cinnamon + 150ml milk',344,29,47,5),mkm('10:30am','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',163,22,16,4),mkm('1:00pm','Sushi-Style Bowl','100g salmon + ½ cup rice + edamame + cucumber + soy + sesame',407,24,47,13),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',199,20,25,3),mkm('7:30pm','Lean Lamb Plate','130g lean lamb mince + tabbouleh + 30g lebneh + lemon',380,25,16,24),mkm('9:30pm','Pre-Bed','150g cottage cheese',99,15,5,4)]),mkday([mkm('7:00am','Avocado Toast','2 eggs + 1 toast + ¼ avocado + tomato + lemon',326,16,20,20),mkm('10:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',253,20,34,7),mkm('1:00pm','Salmon Salad','150g salmon fillet + big salad + olive oil + lemon',434,29,11,27),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',181,20,20,2),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',380,27,24,20),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',136,22,7,3)]),mkday([mkm('8:30am','Lebneh + Eggs','2 eggs + 60g lebneh + 1 small pita + cucumber',344,20,25,16),mkm('11:30am','Whey + Almonds','25g whey + 15g almonds',199,22,5,11),mkm('2:00pm','Chicken Salad Bowl','150g grilled chicken + mixed salad + 30g hummus + olive oil',416,34,16,20),mkm('5:00pm','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',235,22,29,5),mkm('8:00pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',380,27,24,20),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',136,20,7,3)]),mkday([mkm('9:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',344,25,16,20),mkm('11:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',217,16,25,4),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',298,38,29,5),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Steak + Mash (small)','130g lean steak + 150g mash potato + steamed greens',398,29,25,20),mkm('8:00pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',416,29,42,13),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',118,16,9,4)])];
+// Week 12 — Phase 3
+mealPlan[12] = [mkday([mkm('7:00am','Smoked Salmon Mini','60g smoked salmon + ½ wholegrain bagel + 25g cream cheese + capers',326,20,20,16),mkm('10:30am','Whey + Almonds','25g whey + 15g almonds',199,22,5,11),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',398,33,36,11),mkm('4:00pm','Pre-Workout','25g whey + 30g oats + cinnamon',217,22,24,4),mkm('7:30pm','Lean Lamb Plate','130g lean lamb mince + tabbouleh + 30g lebneh + lemon',380,25,16,24),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',118,16,9,4)]),mkday([mkm('7:00am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',326,20,47,5),mkm('10:30am','Tuna on Crackers','80g tuna + 4 wholegrain crackers + lemon',199,22,16,4),mkm('1:00pm','Chicken Fajita Wrap','130g chicken + 1 wrap + peppers + salsa + light cheese 20g',416,34,36,13),mkm('4:00pm','Pre-Workout','25g whey + 1 banana',199,20,25,3),mkm('7:30pm','Salmon + Rice + Greens','130g salmon + ¼ cup rice + steamed greens + lemon',380,27,24,20),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',145,11,20,4)]),mkday([mkm('7:00am','Veggie Omelette','3 eggs, spinach, mushroom, feta 20g, 1 toast',344,25,16,20),mkm('10:30am','Yogurt + Berries','200g Greek yogurt + berries + 1 tsp honey',217,16,25,4),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',398,33,36,11),mkm('4:00pm','Pre-Workout','25g whey + 2 rice cakes',181,20,20,2),mkm('7:30pm','Chicken Curry (light)','130g chicken in tomato curry sauce + ½ cup rice + greens',416,29,42,13),mkm('9:30pm','Pre-Bed','150g cottage cheese',99,15,5,4)]),mkday([mkm('7:00am','Cottage Cheese Toast','200g cottage cheese + 1 toast + 1 tsp jam + berries',308,25,34,5),mkm('10:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',235,22,29,5),mkm('1:00pm','Chicken Fajita Wrap','130g chicken + 1 wrap + peppers + salsa + light cheese 20g',416,34,36,13),mkm('4:00pm','Pre-Workout','150g Greek yogurt + 1 tbsp honey',181,11,29,4),mkm('7:30pm','Grilled Chicken + Veg','150g chicken + roasted zucchini + capsicum + ¼ cup rice',380,34,25,14),mkm('9:30pm','Pre-Bed Casein','25g whey in 200ml almond milk',136,22,7,3)]),mkday([mkm('7:00am','Protein Smoothie','25g whey + 1 banana + 200ml milk + 1 tbsp PB + ice',344,29,34,11),mkm('10:30am','Hummus + Pita','1 small pita + 50g hummus + cucumber sticks',253,7,31,13),mkm('1:00pm','Tuna Wrap','120g tuna + 1 wholegrain wrap + lettuce + tomato + 1 tbsp light mayo',398,33,36,11),mkm('4:00pm','Pre-Workout','25g whey + 1 apple + 10g almonds',253,20,22,7),mkm('7:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',398,29,33,16),mkm('9:30pm','Pre-Bed','100g Greek yogurt + 15g whey',136,20,7,3)]),mkday([mkm('8:30am','Greek Yogurt Bowl','200g Greek yogurt, 30g granola, berries, 1 tsp honey',326,20,47,5),mkm('11:30am','Protein Bar + Apple','1 protein bar (~190 cal) + 1 apple',253,20,34,7),mkm('2:00pm','Quinoa Buddha Bowl','130g chicken + ½ cup quinoa + roasted veg + lemon tahini',434,33,38,14),mkm('5:00pm','Lite Smoothie','25g whey + ½ banana + 200ml almond milk + ice',163,22,16,4),mkm('8:00pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',398,29,33,16),mkm('9:30pm','Pre-Bed','150g cottage cheese + handful berries',118,16,9,4)]),mkday([mkm('9:00am','Eggs + Toast','2 eggs scrambled, 2 wholegrain toast, ½ tsp butter, black coffee',326,20,29,14),mkm('11:30am','Cottage Cheese + Fruit','200g cottage cheese + 1 banana + cinnamon',235,22,29,5),mkm('1:30pm','Whey Shake','40g whey + 200ml milk + 1 banana',298,38,29,5),mkm('3:00pm','MEAL PREP','Cook for the week ahead — chicken, beef, rice, roasted veg',0,0,0,0),mkm('5:30pm','Beef + Sweet Potato','130g lean beef mince + 150g sweet potato + greens + olive oil',398,29,33,16),mkm('8:00pm','Chicken Stir-Fry','150g chicken + bok choy + capsicum + ½ cup rice + soy + ginger',398,34,38,9),mkm('9:30pm','Pre-Bed Yog','150g Greek yogurt + 1 tsp honey + cinnamon',145,11,20,4)])];
+let currentNutritionPhase=1,currentNutritionWeek=1,currentNutritionDay=0;
+function getPhaseForWeek(w){return w<=4?1:w<=8?2:3;}
+function setNutritionPhase(n){if(n>1&&!getUnlocked().includes(n)){showNutritionLock(n);return;}currentNutritionPhase=n;currentNutritionWeek=n===1?1:n===2?5:9;currentNutritionDay=0;document.querySelectorAll('#nutrition-phase-tabs .phase-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));renderNutrition();}
+function setNutritionWeek(w){currentNutritionWeek=w;currentNutritionDay=0;const phase=getPhaseForWeek(w);const startWeek=phase===1?1:phase===2?5:9;document.querySelectorAll('.nutr-week-btn').forEach((b,i)=>b.classList.toggle('active',i===w-startWeek));renderNutritionDay();}
+function setNutritionDay(d){currentNutritionDay=d;document.querySelectorAll('.nutr-day-btn').forEach((b,i)=>b.classList.toggle('active',i===d));renderNutritionDayContent();}
+
+
+function showNutritionLock(n){
+  const phase=getPhaseForWeek(n===2?5:9);
+  const daysLeft=getDaysRemaining(n);
+  const timerReady=isTimerUnlocked(n);
+  document.getElementById('nutrition-main').innerHTML=`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;text-align:center;margin-top:1rem;">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:0.5rem;">Phase ${n} Nutrition Locked</div>
+      <div style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem;line-height:1.6;">${timerReady?'Timer unlocked — enter your code to access Phase '+n+' nutrition.':'Nutrition for Phase '+n+' unlocks after '+TIMER_DAYS[n]+' days AND requires a code from your trainer.'}</div>
+      <div style="display:flex;gap:0.75rem;justify-content:center;align-items:center;flex-wrap:wrap;">
+        <input id="nutr-unlock-input" type="text" placeholder="Enter unlock code" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.9rem;padding:0.7rem 1rem;outline:none;width:200px;text-align:center;letter-spacing:0.1em;" onkeydown="if(event.key==='Enter')submitNutritionCode(${n})"/>
+        <button onclick="submitNutritionCode(${n})" style="padding:0.7rem 1.5rem;background:var(--accent);border:none;border-radius:8px;color:white;font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Unlock</button>
+      </div>
+      <div id="nutr-unlock-error" style="color:var(--danger);font-size:0.8rem;margin-top:0.75rem;display:none;">Incorrect code. Contact your trainer.</div>
+      ${!timerReady?'<div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);"><div style="font-family:\'DM Mono\',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.15em;margin-bottom:0.5rem;">TIME REMAINING</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:2.5rem;color:var(--accent2);">'+daysLeft+' days</div><div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem;">until Phase '+n+' nutrition becomes available</div></div>':''}
+    </div>`;
+  document.querySelectorAll('#nutrition-phase-tabs .phase-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+}
+
+function submitNutritionCode(n){
+  const input=document.getElementById('nutr-unlock-input').value.trim().toUpperCase();
+  const timerReady=isTimerUnlocked(n);
+  if(!timerReady){document.getElementById('nutr-unlock-error').textContent='Timer not reached yet — keep grinding!';document.getElementById('nutr-unlock-error').style.display='block';return;}
+  if(input===CODES[n]){setUnlocked(n);document.getElementById('tab-phase-'+n).textContent='Phase '+n+' — '+phases[n].label+' ✓';setNutritionPhase(n);}
+  else{document.getElementById('nutr-unlock-error').style.display='block';document.getElementById('nutr-unlock-input').value='';}
+}
+
+function renderNutrition(){
+  const t=phaseTargets[currentNutritionPhase];
+  const phase=currentNutritionPhase;
+  const startWeek=phase===1?1:phase===2?5:9;
+  const endWeek=phase===1?4:phase===2?8:12;
+  const rationale=['Foundation phase. Moderate deficit (100 kcal) to start losing fat steadily without cratering training. Protein high to protect muscle.','Build phase. Deficit tightens to 50 kcal as metabolism adapts. Carbs reduced and timed around training for performance.','Peak phase. Largest deficit (50 kcal). Carbs minimal except pre-workout. Every calorie earns its place.'][phase-1];
+  const totalMacroKcal=(t.p*4)+(t.c*4)+(t.f*9);
+  const pPct=Math.round((t.p*4/totalMacroKcal)*100);
+  const cPct=Math.round((t.c*4/totalMacroKcal)*100);
+  const fPct=100-pPct-cPct;
+  const weekBtns=Array.from({length:endWeek-startWeek+1},(_,i)=>{const w=startWeek+i;return`<button class="nutr-week-btn day-tab ${w===currentNutritionWeek?'active':''}" onclick="setNutritionWeek(${w})">Week ${w}</button>`;}).join('');
+  document.getElementById('nutrition-main').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+      <div class="info-card"><div class="info-card-label">Daily Calories</div><div class="info-card-val">${t.cal.toLocaleString()}</div><div class="info-card-desc">~${t.deficit} kcal deficit</div></div>
+      <div class="info-card"><div class="info-card-label">Protein</div><div class="info-card-val" style="color:var(--accent)">${t.p}g</div><div class="info-card-desc">2.3g/kg · muscle shield</div></div>
+      <div class="info-card"><div class="info-card-label">Carbs</div><div class="info-card-val" style="color:var(--accent2)">${t.c}g</div><div class="info-card-desc">Around workouts</div></div>
+      <div class="info-card"><div class="info-card-label">Fat</div><div class="info-card-val" style="color:var(--accent3)">${t.f}g</div><div class="info-card-desc">Hormones + satiety</div></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.15em;margin-bottom:0.6rem;">MACRO SPLIT</div>
+      <div style="display:flex;height:10px;border-radius:20px;overflow:hidden;gap:2px;margin-bottom:0.6rem;">
+        <div style="width:${pPct}%;background:var(--accent);border-radius:20px 0 0 20px;"></div>
+        <div style="width:${cPct}%;background:var(--accent2);"></div>
+        <div style="width:${fPct}%;background:var(--accent3);border-radius:0 20px 20px 0;"></div>
+      </div>
+      <div style="display:flex;gap:1.5rem;">
+        <span style="font-size:0.78rem;color:var(--muted)"><span style="color:var(--accent)">■</span> Protein ${pPct}%</span>
+        <span style="font-size:0.78rem;color:var(--muted)"><span style="color:var(--accent2)">■</span> Carbs ${cPct}%</span>
+        <span style="font-size:0.78rem;color:var(--muted)"><span style="color:var(--accent3)">■</span> Fat ${fPct}%</span>
+      </div>
+    </div>
+    <div style="background:rgba(0,229,160,0.05);border:1px solid rgba(0,229,160,0.2);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent3);letter-spacing:0.15em;margin-bottom:0.3rem;">WHY THIS WORKS</div>
+      <div style="font-size:0.83rem;color:var(--muted);line-height:1.6;">${rationale}</div>
+    </div>
+    <div class="section-tag" style="margin-bottom:0.75rem;">Select Week</div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">${weekBtns}</div>
+    <div id="nutrition-day-section"></div>`;
+  renderNutritionDay();
+}
+
+function renderNutritionDay(){
+  const dayBtns=DAY_NAMES.map((d,i)=>`<button class="nutr-day-btn day-tab ${i===currentNutritionDay?'active':''}" onclick="setNutritionDay(${i})" style="display:flex;flex-direction:column;align-items:center;gap:2px;"><span>${d.slice(0,3)}</span><span style="font-size:0.6rem;color:var(--muted)">${DAY_TYPES[i].split('/')[0].split(' ')[0]}</span></button>`).join('');
+  document.getElementById('nutrition-day-section').innerHTML=`
+    <div class="section-tag" style="margin-bottom:0.75rem;">Select Day — Week ${currentNutritionWeek}</div>
+    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.5rem;">${dayBtns}</div>
+    <div id="nutrition-day-content"></div>`;
+  renderNutritionDayContent();
+}
+
+function renderNutritionDayContent(){
+  const dayData=mealPlan[currentNutritionWeek][currentNutritionDay];
+  const t=phaseTargets[currentNutritionPhase];
+  const isRestDay=currentNutritionDay===5||currentNutritionDay===6;
+  const isCardioDay=false;
+  const typeBadgeColor=isRestDay?'var(--accent3)':isCardioDay?'var(--accent2)':'var(--accent)';
+  const typeBadge=currentNutritionDay===6?'😴 REST + MEAL PREP':currentNutritionDay===5?'😴 REST DAY':'💪 TRAINING DAY';
+  const validMeals=dayData.meals.filter(m=>m.name);
+  const totalCal=validMeals.reduce((s,m)=>s+m.cal,0);
+  const totalP=validMeals.reduce((s,m)=>s+m.p,0);
+  const totalC=validMeals.reduce((s,m)=>s+m.c,0);
+  const totalF=validMeals.reduce((s,m)=>s+m.f,0);
+  const calPct=Math.min(100,Math.round((totalCal/t.cal)*100));
+  const mealRows=validMeals.map(meal=>{
+    if(!meal.cal)return`<div style="background:rgba(0,229,160,0.05);border:1px dashed rgba(0,229,160,0.3);border-radius:10px;padding:1rem 1.5rem;text-align:center;font-size:0.85rem;color:var(--accent3);">🍳 ${meal.name} — ${meal.desc}</div>`;
+    return`<div class="meal-card" style="grid-template-columns:140px 1fr 52px 52px 60px;">
+      <div><div class="meal-time">${meal.time}</div><div style="font-size:0.8rem;font-weight:500;color:var(--text);margin-top:0.2rem;">${meal.name}</div></div>
+      <div class="meal-food">${meal.desc}</div>
+      <div style="text-align:center"><div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent);font-weight:600;">${meal.p}g</div><div style="font-size:0.6rem;color:var(--muted)">PRO</div></div>
+      <div style="text-align:center"><div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent2);font-weight:600;">${meal.c}g</div><div style="font-size:0.6rem;color:var(--muted)">CARB</div></div>
+      <div style="text-align:center"><div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--accent3);line-height:1;">${meal.cal}</div><div style="font-size:0.6rem;color:var(--muted)">kcal</div></div>
+    </div>`;
+  }).join('');
+  document.getElementById('nutrition-day-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;">${DAY_NAMES[currentNutritionDay]} — Week ${currentNutritionWeek}</div>
+      <span style="font-family:'DM Mono',monospace;font-size:0.65rem;padding:0.3rem 0.8rem;border-radius:4px;background:rgba(79,127,255,0.1);border:1px solid ${typeBadgeColor};color:${typeBadgeColor};">${typeBadge}</span>
+    </div>
+    <div class="meal-cards" style="margin-bottom:1.5rem;">${mealRows}</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.5rem;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.15em;margin-bottom:0.75rem;">DAILY TOTALS vs TARGET</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
+        <div><div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.2rem;">Calories</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:${calPct>=90?'var(--accent3)':'var(--accent)'};">${totalCal}</div><div style="font-size:0.7rem;color:var(--muted);">target ${t.cal}</div></div>
+        <div><div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.2rem;">Protein</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent);">${totalP}g</div><div style="font-size:0.7rem;color:var(--muted);">target ${t.p}g</div></div>
+        <div><div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.2rem;">Carbs</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent2);">${totalC}g</div><div style="font-size:0.7rem;color:var(--muted);">target ${t.c}g</div></div>
+        <div><div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.2rem;">Fat</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent3);">${totalF}g</div><div style="font-size:0.7rem;color:var(--muted);">target ${t.f}g</div></div>
+      </div>
+      <div style="display:flex;height:6px;border-radius:20px;overflow:hidden;background:var(--surface);gap:1px;">
+        <div style="width:${calPct}%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:20px;transition:width 0.4s;"></div>
+      </div>
+      <div style="font-size:0.72rem;color:var(--muted);margin-top:0.3rem;">${calPct}% of daily calorie target</div>
+    </div>`;
+}
+
+// ─── NAV LOCK ─────────────────────────────────────────────────────────────────
+function tryNavLock(id) {
+  const unlocked = getUnlocked();
+  // Cardio and Nutrition Phase 2+ content is locked — but we can still show them
+  // The tabs inside those sections handle the phase locks already
+  // Just let them through — the internal phase tabs block Phase 2/3
+  showSection(id);
+}
+
+// ─── LOCK SYSTEM ─────────────────────────────────────────────────────────────
+// Codes + timers come from CLIENT_CONFIG.phases above. Don't edit here.
+const CODES = { 2: CLIENT_CONFIG.phases[2].unlockCode,    3: CLIENT_CONFIG.phases[3].unlockCode };
+const TIMER_DAYS = { 2: CLIENT_CONFIG.phases[2].unlockAfterDays, 3: CLIENT_CONFIG.phases[3].unlockAfterDays };
+
+// Start date is set automatically the first time the page is opened by the client.
+const START_DATE = localStorage.getItem(LS_KEYS.start) || null;
+
+let attemptingPhase = null;
+let countdownInterval = null;
+
+function getUnlocked() {
+  return JSON.parse(localStorage.getItem(LS_KEYS.unlocked) || '[1]');
+}
+
+function setUnlocked(phase) {
+  const u = getUnlocked();
+  if (!u.includes(phase)) u.push(phase);
+  localStorage.setItem(LS_KEYS.unlocked, JSON.stringify(u));
+}
+
+function isTimerUnlocked(phase) {
+  if (!START_DATE) return false;
+  const start = new Date(START_DATE);
+  const now = new Date();
+  const daysPassed = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+  return daysPassed >= TIMER_DAYS[phase];
+}
+
+function getDaysRemaining(phase) {
+  if (!START_DATE) return TIMER_DAYS[phase];
+  const start = new Date(START_DATE);
+  const now = new Date();
+  const daysPassed = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+  return Math.max(0, TIMER_DAYS[phase] - daysPassed);
+}
+
+function tryUnlock(phase) {
+  const unlocked = getUnlocked();
+  if (unlocked.includes(phase)) { setPhase(phase); return; }
+
+  attemptingPhase = phase;
+  const timerReady = isTimerUnlocked(phase);
+  const daysLeft = getDaysRemaining(phase);
+
+  document.getElementById('lock-title').textContent = `Phase ${phase} — ${phases[phase].label} 🔒`;
+  document.getElementById('unlock-error').style.display = 'none';
+  document.getElementById('unlock-input').value = '';
+
+  const countdownEl = document.getElementById('lock-countdown');
+  const countdownWrap = countdownEl.parentElement;
+
+  if (timerReady) {
+    document.getElementById('lock-desc').textContent = `You've completed ${TIMER_DAYS[phase]} days — the timer has unlocked. Enter the code from your trainer to access Phase ${phase}.`;
+    countdownWrap.style.display = 'none';
+  } else {
+    document.getElementById('lock-desc').textContent = `Phase ${phase} unlocks after ${TIMER_DAYS[phase]} days AND requires a code from your trainer. Keep grinding Phase ${phase - 1}.`;
+    countdownWrap.style.display = 'block';
+    countdownEl.textContent = `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
+  }
+
+  // Hide workout, show lock
+  document.getElementById('phase-info').style.display = 'none';
+  document.getElementById('day-tabs').style.display = 'none';
+  document.getElementById('workout-content').style.display = 'none';
+  document.getElementById('progression-content').style.display = 'none';
+  document.getElementById('lock-overlay').style.display = 'block';
+
+  // Update tab styles
+  document.querySelectorAll('.phase-tab').forEach((t, i) => t.classList.toggle('active', i === phase - 1));
+}
+
+function submitCode() {
+  const input = document.getElementById('unlock-input').value.trim().toUpperCase();
+  const timerReady = isTimerUnlocked(attemptingPhase);
+
+  if (!timerReady) {
+    document.getElementById('unlock-error').textContent = `Timer hasn't reached ${TIMER_DAYS[attemptingPhase]} days yet. Keep grinding!`;
+    document.getElementById('unlock-error').style.display = 'block';
+    return;
+  }
+
+  if (input === CODES[attemptingPhase]) {
+    setUnlocked(attemptingPhase);
+    document.getElementById('lock-overlay').style.display = 'none';
+    document.getElementById('phase-info').style.display = '';
+    document.getElementById('day-tabs').style.display = '';
+    document.getElementById('workout-content').style.display = '';
+    document.getElementById('progression-content').style.display = '';
+    // Update tab label to remove lock icon
+    document.getElementById(`tab-phase-${attemptingPhase}`).textContent = `Phase ${attemptingPhase} — ${phases[attemptingPhase].label} ✓`;
+    // Unblur cardio cards
+    const cCard = document.getElementById('cardio-card-p'+attemptingPhase);
+    if(cCard){cCard.style.filter='';cCard.style.pointerEvents='';cCard.style.userSelect='';}
+    if(attemptingPhase===2){const cn=document.getElementById('cardio-unlock-notice');if(cn)cn.style.display='none';}
+    // Update nutrition tab
+    const nTab = document.querySelectorAll('#nutrition-phase-tabs .phase-tab')[attemptingPhase-1];
+    if(nTab) nTab.textContent = 'Phase '+attemptingPhase+' · Weeks '+(attemptingPhase===2?'5–8':'9–12')+' ✓';
+    setPhase(attemptingPhase);
+  } else {
+    document.getElementById('unlock-error').textContent = 'Incorrect code. Contact your trainer.';
+    document.getElementById('unlock-error').style.display = 'block';
+    document.getElementById('unlock-input').value = '';
+  }
+}
+
+function initLockState() {
+  // If no start date saved, set it now (first time opening)
+  if (!localStorage.getItem(LS_KEYS.start)) {
+    localStorage.setItem(LS_KEYS.start, new Date().toISOString().split('T')[0]);
+  }
+
+  const unlocked = getUnlocked();
+  if (unlocked.includes(2)) {
+    document.getElementById('tab-phase-2').textContent = 'Phase 2 — Build ✓';
+    const n2 = document.querySelectorAll('#nutrition-phase-tabs .phase-tab')[1];
+    if(n2) n2.textContent = 'Phase 2 · Weeks 5–8 ✓';
+    const c2 = document.getElementById('cardio-card-p2');
+    if(c2){c2.style.filter='';c2.style.pointerEvents='';c2.style.userSelect='';}
+    const cn = document.getElementById('cardio-unlock-notice');
+    if(cn) cn.style.display='none';
+  }
+  if (unlocked.includes(3)) {
+    document.getElementById('tab-phase-3').textContent = 'Phase 3 — Peak ✓';
+    const n3 = document.querySelectorAll('#nutrition-phase-tabs .phase-tab')[2];
+    if(n3) n3.textContent = 'Phase 3 · Weeks 9–12 ✓';
+    const c3 = document.getElementById('cardio-card-p3');
+    if(c3){c3.style.filter='';c3.style.pointerEvents='';c3.style.userSelect='';}
+  }
+}
+
+// ─── CLIENT_CONFIG → DOM substitution ────────────────────────────────────────
+// Reads CLIENT_CONFIG and rewrites the visible cosmetic bits at boot time so
+// the trainer doesn't have to find/replace text throughout the file.
+function applyClientConfig() {
+  const c = CLIENT_CONFIG.client;
+  // Browser tab title
+  document.title = c.fullTitle;
+  // Hero
+  const heroTitle = document.querySelector('.hero-title');
+  if (heroTitle) heroTitle.innerHTML = c.heroLine1 + '<span class="line2">' + c.heroLine2 + '</span>';
+  const heroSub = document.querySelector('.hero-sub');
+  if (heroSub) heroSub.textContent = c.heroSub;
+  // Tracker input placeholder
+  const weightInput = document.getElementById('input-weight');
+  if (weightInput) weightInput.placeholder = String(c.startWeight);
+  // Any element with data-cfg="..." gets its textContent set from CLIENT_CONFIG
+  document.querySelectorAll('[data-cfg]').forEach(el => {
+    const key = el.getAttribute('data-cfg');
+    let val = '';
+    if (key === 'startWeight')      val = c.startWeight;
+    else if (key === 'goalWeight')  val = c.goalWeight;
+    else if (key === 'startWeightLabel') val = c.startWeight + ' kg (start)';
+    else if (key === 'goalWeightLabel')  val = c.goalWeight  + ' kg (goal)';
+    else if (key === 'toGoalKg')    val = (c.startWeight - c.goalWeight).toFixed(1) + ' kg';
+    else if (key === 'firstName')   val = c.firstName;
+    el.textContent = val;
+  });
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+applyClientConfig();
+initLockState();
+renderTraining();
+renderNutrition();
+
+// ─── TRAINER OVERRIDE ────────────────────────────────────────────────────
+// Knowing CLIENT_CONFIG.trainerPassword lets the trainer unlock all phases
+// regardless of the per-phase codes or unlock timer. The state persists in
+// localStorage so the page stays unlocked across reloads (clear via the
+// trainer logout button).
+const LS_TRAINER_KEY = CLIENT_CONFIG.client.storageKey + '_trainer_mode';
+function isTrainerMode(){return localStorage.getItem(LS_TRAINER_KEY)==='1';}
+function trainerLogin(){
+  const pw = prompt('Trainer password — leave blank to cancel:');
+  if(pw===null||pw==='')return;
+  if(pw === CLIENT_CONFIG.trainerPassword){
+    setUnlocked(2); setUnlocked(3);
+    localStorage.setItem(LS_TRAINER_KEY,'1');
+    showTrainerBadge();
+    // Refresh the visible labels and the lock overlays
+    const t2=document.getElementById('tab-phase-2');
+    if(t2)t2.textContent='Phase 2 — '+phases[2].label+' ✓';
+    const t3=document.getElementById('tab-phase-3');
+    if(t3)t3.textContent='Phase 3 — '+phases[3].label+' ✓';
+    const c2=document.getElementById('cardio-card-p2');if(c2){c2.style.filter='';c2.style.pointerEvents='';c2.style.userSelect='';}
+    const c3=document.getElementById('cardio-card-p3');if(c3){c3.style.filter='';c3.style.pointerEvents='';c3.style.userSelect='';}
+    const cu=document.getElementById('cardio-unlock-notice');if(cu)cu.style.display='none';
+    alert('✓ Trainer mode active — Phase 2 + Phase 3 unlocked.');
+  } else {
+    alert('Wrong password.');
+  }
+}
+function trainerLogout(){
+  if(!confirm('Exit trainer mode? Phases 2 & 3 will re-lock until the timer or unlock code.'))return;
+  localStorage.removeItem(LS_TRAINER_KEY);
+  // Also clear unlocked phases so the client view returns
+  localStorage.removeItem(LS_KEYS.unlocked);
+  location.reload();
+}
+function showTrainerBadge(){
+  if(document.getElementById('trainer-badge'))return;
+  const b=document.createElement('div');
+  b.id='trainer-badge';
+  b.innerHTML='⚙ TRAINER MODE · <a href="javascript:trainerLogout()" style="color:#fff;text-decoration:underline">exit</a>';
+  b.style.cssText='position:fixed;top:10px;right:10px;background:#ff6644;color:#fff;font-family:DM Mono,monospace;font-size:0.65rem;letter-spacing:0.1em;padding:0.4rem 0.8rem;border-radius:4px;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.5);';
+  document.body.appendChild(b);
+}
+// Three ways to open the trainer prompt (Cmd+Shift+T is browser-reserved):
+//   1. Click the floating "trainer" button in the bottom-right corner
+//   2. Append #trainer to the URL and reload (e.g. .../jamal.html#trainer)
+//   3. Press the backtick (`) key three times in quick succession
+let _bt = []; // backtick keypresses
+document.addEventListener('keydown', function(e){
+  if(e.key === '`'){
+    const now = Date.now();
+    _bt = _bt.filter(t => now - t < 1500);
+    _bt.push(now);
+    if(_bt.length >= 3){ _bt = []; trainerLogin(); }
+  }
+});
+// URL hash trigger: visit ...#trainer to open the prompt on load.
+window.addEventListener('load', function(){
+  if(location.hash === '#trainer'){
+    history.replaceState(null,'',location.pathname); // strip the hash so it
+                                                     // doesn't re-trigger
+    trainerLogin();
+  }
+});
+// Always-visible floating button (small, bottom-right, low opacity)
+window.addEventListener('load', function(){
+  if(document.getElementById('trainer-btn')) return;
+  const b = document.createElement('button');
+  b.id = 'trainer-btn';
+  b.textContent = '🔒 trainer';
+  b.title = 'Trainer access (or press ` three times)';
+  b.onclick = trainerLogin;
+  b.style.cssText = 'position:fixed;bottom:14px;right:14px;background:rgba(0,0,0,0.5);border:1px solid var(--border);color:var(--muted);font-family:DM Mono,monospace;font-size:0.65rem;letter-spacing:0.08em;padding:0.4rem 0.7rem;border-radius:6px;opacity:0.55;cursor:pointer;z-index:9000;';
+  b.onmouseenter = () => b.style.opacity = '1';
+  b.onmouseleave = () => b.style.opacity = '0.55';
+  document.body.appendChild(b);
+});
+// On boot: if trainer mode was already enabled, show the badge
+if(isTrainerMode()){
+  // Make sure phases stay unlocked
+  setUnlocked(2); setUnlocked(3);
+  window.addEventListener('load', showTrainerBadge);
+}
+// ─── END TRAINER OVERRIDE ────────────────────────────────────────────────
+
+renderCheckins();
+</script>
+
+<script>
+// ─── TRAINER OVERRIDE ────────────────────────────────────────────────────
+const _LS_TRAINER = CLIENT_CONFIG.client.storageKey + '_trainer_mode';
+function isTrainerMode(){return localStorage.getItem(_LS_TRAINER)==='1';}
+function trainerLogin(){
+  const pw = prompt('Trainer password — leave blank to cancel:');
+  if(pw===null||pw==='')return;
+  if(pw === CLIENT_CONFIG.trainerPassword){
+    setUnlocked(2); setUnlocked(3);
+    localStorage.setItem(_LS_TRAINER,'1');
+    showTrainerBadge();
+    const t2=document.getElementById('tab-phase-2'); if(t2)t2.textContent='Phase 2 — '+phases[2].label+' ✓';
+    const t3=document.getElementById('tab-phase-3'); if(t3)t3.textContent='Phase 3 — '+phases[3].label+' ✓';
+    const c2=document.getElementById('cardio-card-p2');if(c2){c2.style.filter='';c2.style.pointerEvents='';c2.style.userSelect='';}
+    const c3=document.getElementById('cardio-card-p3');if(c3){c3.style.filter='';c3.style.pointerEvents='';c3.style.userSelect='';}
+    const cu=document.getElementById('cardio-unlock-notice');if(cu)cu.style.display='none';
+    alert('✓ Trainer mode active — Phase 2 + Phase 3 unlocked.');
+  } else { alert('Wrong password.'); }
+}
+function trainerLogout(){
+  if(!confirm('Exit trainer mode? Phases will re-lock.'))return;
+  localStorage.removeItem(_LS_TRAINER);
+  localStorage.removeItem(LS_KEYS.unlocked);
+  location.reload();
+}
+function showTrainerBadge(){
+  if(document.getElementById('trainer-badge'))return;
+  const b=document.createElement('div');
+  b.id='trainer-badge';
+  b.innerHTML='⚙ TRAINER MODE · <a href="javascript:trainerLogout()" style="color:#fff;text-decoration:underline">exit</a>';
+  b.style.cssText='position:fixed;top:10px;right:10px;background:#ff6644;color:#fff;font-family:DM Mono,monospace;font-size:0.65rem;letter-spacing:0.1em;padding:0.4rem 0.8rem;border-radius:4px;z-index:9999;';
+  document.body.appendChild(b);
+}
+let _bt=[];
+document.addEventListener('keydown',function(e){
+  if(e.key==='`'){
+    const now=Date.now();
+    _bt=_bt.filter(t=>now-t<1500);
+    _bt.push(now);
+    if(_bt.length>=3){_bt=[];trainerLogin();}
+  }
+});
+window.addEventListener('load',function(){
+  if(location.hash==='#trainer'){history.replaceState(null,'',location.pathname);trainerLogin();}
+  if(document.getElementById('trainer-btn'))return;
+  const b=document.createElement('button');
+  b.id='trainer-btn';
+  b.textContent='🔒 trainer';
+  b.title='Trainer access (or press ` three times)';
+  b.onclick=trainerLogin;
+  b.style.cssText='position:fixed;bottom:14px;right:14px;background:rgba(0,0,0,0.5);border:1px solid var(--border);color:var(--muted);font-family:DM Mono,monospace;font-size:0.65rem;letter-spacing:0.08em;padding:0.4rem 0.7rem;border-radius:6px;opacity:0.55;cursor:pointer;z-index:9000;';
+  b.onmouseenter=()=>b.style.opacity='1';
+  b.onmouseleave=()=>b.style.opacity='0.55';
+  document.body.appendChild(b);
+});
+if(isTrainerMode()){setUnlocked(2);setUnlocked(3);window.addEventListener('load',showTrainerBadge);}
+</script>
+</body>
+</html>
